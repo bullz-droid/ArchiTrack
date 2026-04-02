@@ -36,7 +36,8 @@ const Library: React.FC = () => {
             projectId: selectedProject,
             fileType: selectedType,
             folder: selectedFolder,
-            dateSort
+            dateSort,
+            search
           }
         }),
         api.get('/projects')
@@ -51,8 +52,11 @@ const Library: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [selectedProject, selectedType, selectedFolder, dateSort]);
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 300); // Debounce search
+    return () => clearTimeout(timer);
+  }, [selectedProject, selectedType, selectedFolder, dateSort, search]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;

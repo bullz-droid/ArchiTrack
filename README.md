@@ -1,41 +1,55 @@
-# ArchiTrack
-ArchiTrack, Architectz mobile visibility
 # 🏗️ ArchiTrack
 
-ArchiTrack is a modern web application designed for architecture students to manage studio projects, upload design files, track deadlines, and generate professional portfolios.
+**The Digital Studio for Architecture Students.**
 
-## 🚀 Features
+ArchiTrack is a minimalist, high-performance platform designed to bridge the gap between studio workflow and professional portfolio presentation.
 
-* 📁 Project Management (Create, edit, organize projects)
-* 📤 File Upload (PDFs, images, CAD exports)
-* 🗂️ Archi Library (Centralized file storage system)
-* 📅 Deadline Tracking with alerts
-* 📝 Notes & Design Ideas
-* 🔐 Secure Authentication (powered by Supabase)
-* 🌐 Public Portfolio (coming soon)
+## 🚀 Live Environment
+
+* **Backend**: [Railway](https://railway.app)
+* **Frontend**: [Vercel](https://vercel.com)
+* **Database**: [Supabase](https://supabase.com)
+
+## 📁 Core Features
+
+* **STUDIO WORKSPACE**: Centralized dashboard with real-time deadline alerts and course-based project organization.
+* **ARCHI LIBRARY**: A professional asset manager for CAD exports, high-res renders, and studio PDFs. Supports signed URLs for secure sharing.
+* **DESIGN LOG**: A markdown-ready note system for capturing site analysis, concept iterations, and critique feedback.
+* **PORTFOLIO GENERATOR**: Instantly turn curated studio projects into a professional, public-facing gallery with a unique URL.
 
 ## 🛠️ Tech Stack
 
-* Frontend: React + Tailwind CSS
-* Backend: Node.js + Express
-* Database & Storage: Supabase
+* **Client**: React 18, Tailwind CSS (Custom Studio Theme), Lucide Icons, Axios.
+* **Server**: Node.js, Express.js.
+* **Auth & Data**: Supabase Auth (JWT), PostgreSQL (RLS enabled), Supabase Storage.
+* **Deployment**: CI/CD via GitHub to Railway (API) and Vercel (UI).
 
-## 📸 Screenshots
+## ⚙️ Development Setup
 
-(Add images of your dashboard, projects, and library here)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/bullz-droid/ArchiTrack.git
+   ```
 
-## ⚙️ Setup Instructions
+2. **Backend Setup**
+   ```bash
+   cd server
+   npm install
+   # Create .env with SUPABASE_URL and SUPABASE_ANON_KEY
+   npm run dev
+   ```
 
-```bash
-git clone https://github.com/YOUR_USERNAME/ArchiTrack.git
-cd ArchiTrack
-npm install
-npm run dev
-```
+3. **Frontend Setup**
+   ```bash
+   cd client
+   npm install
+   # Create .env with VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, and VITE_API_URL
+   npm run dev
+   ```
 
 ## 🌍 Vision
 
-ArchiTrack aims to become a complete digital studio environment for architecture students — combining project management, file storage, and portfolio creation in one platform.
+ArchiTrack is built by architecture students, for architecture students. Our goal is to eliminate the friction of organizing a 5-year studio career into a portfolio, one project at a time.
 
 ## 👨‍💻 Author
 

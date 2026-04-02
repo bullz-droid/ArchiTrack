@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import { Folder, Calendar, PenTool, ArrowRight, Clock } from 'lucide-react';
+import { Folder, Calendar, PenTool, ArrowRight, Clock, Globe } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Dashboard: React.FC = () => {
+  const { session } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ projects: 0, deadlines: 0, notes: 0 });
+
+  const username = session?.user?.user_metadata?.username || session?.user?.email?.split('@')[0] || 'studio';
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,7 +54,7 @@ const Dashboard: React.FC = () => {
       </header>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         <Link to="/projects" className="bg-white border border-gray-100 p-8 transition-all hover:border-archi-black group">
           <div className="flex justify-between items-start mb-6">
             <div className="p-3 bg-archi-gray group-hover:bg-archi-black transition-colors">
@@ -77,6 +81,19 @@ const Dashboard: React.FC = () => {
             <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Design Log Entries</span>
           </div>
           <p className="text-5xl font-black tracking-tighter">{stats.notes}</p>
+        </Link>
+        <Link to="/portfolio" className="bg-archi-black p-8 transition-all hover:bg-archi-dark-gray group">
+          <div className="flex justify-between items-start mb-6">
+            <div className="p-3 bg-white/10 group-hover:bg-white/20 transition-colors">
+              <Globe size={24} className="text-white" />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Portfolio Status</span>
+          </div>
+          <p className="text-xl font-black tracking-tighter text-white uppercase mt-4">Live at /{username}</p>
+          <div className="mt-6 flex items-center gap-2 text-white/60 group-hover:text-white transition-colors">
+            <span className="text-[9px] font-bold uppercase tracking-widest">Open Public Link</span>
+            <ArrowRight size={12} />
+          </div>
         </Link>
       </div>
 

@@ -3,7 +3,7 @@ const { getSupabaseClient } = require('../services/supabase');
 exports.getFiles = async (req, res) => {
   try {
     const client = getSupabaseClient(req.token);
-    const { projectId, fileType, dateSort, folder } = req.query;
+    const { projectId, fileType, dateSort, folder, search } = req.query;
 
     let query = client
       .from('files')
@@ -16,6 +16,10 @@ exports.getFiles = async (req, res) => {
 
     if (folder) {
       query = query.eq('folder', folder);
+    }
+
+    if (search) {
+      query = query.ilike('file_name', `%${search}%`);
     }
 
     if (fileType) {
