@@ -11,8 +11,6 @@ import {
   Bell, 
   X, 
   Clock, 
-  Globe, 
-  Share2, 
   Library,
   Sun,
   Moon,
@@ -209,7 +207,5 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     </div>
   );
 };
-
-export default Layout;
 
 export default Layout;
