@@ -28,7 +28,7 @@ ArchiTrack is a minimalist, high-performance platform designed to bridge the gap
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/bullz-droid/ArchiTrack.git
+   git clone https://github.com/WEFAFA256/architrack.git
    ```
 
 2. **Backend Setup**
