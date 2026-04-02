@@ -14,17 +14,25 @@ const Login: React.FC = () => {
     setLoading(true);
     setError('');
     
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setError(error.message);
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+      } else {
+        localStorage.setItem('username', data.user.user_metadata?.username || '');
+        navigate('/dashboard');
+      }
+    } catch (err: any) {
+      console.error('Login failed:', err);
+      setError(err.message === 'Failed to fetch' 
+        ? 'Cannot connect to Supabase. Check your internet connection and environment variables.' 
+        : `An unexpected error occurred: ${err.message}`);
       setLoading(false);
-    } else {
-      localStorage.setItem('username', data.user.user_metadata?.username || '');
-      navigate('/dashboard');
     }
   };
 

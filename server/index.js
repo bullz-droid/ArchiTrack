@@ -13,7 +13,8 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   'http://localhost:5353',
   process.env.FRONTEND_URL,
-  'https://architrack.vercel.app', // Default Vercel production
+  'https://architrack.vercel.app',
+  'https://architrack-murex.vercel.app', // User's current deployment
 ].filter(Boolean);
 
 app.use(cors({

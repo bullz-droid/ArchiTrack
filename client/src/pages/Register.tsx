@@ -15,22 +15,30 @@ const Register: React.FC = () => {
     setLoading(true);
     setError('');
     
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          username,
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+          }
         }
-      }
-    });
+      });
 
-    if (error) {
-      setError(error.message);
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+      } else {
+        localStorage.setItem('username', username);
+        navigate('/dashboard');
+      }
+    } catch (err: any) {
+      console.error('Registration failed:', err);
+      setError(err.message === 'Failed to fetch' 
+        ? 'Cannot connect to Supabase. Check your internet connection and environment variables.' 
+        : `An unexpected error occurred: ${err.message}`);
       setLoading(false);
-    } else {
-      localStorage.setItem('username', username);
-      navigate('/dashboard');
     }
   };
 
