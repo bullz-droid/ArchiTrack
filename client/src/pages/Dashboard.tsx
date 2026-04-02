@@ -46,53 +46,75 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-16">
-      <header className="border-b border-gray-100 pb-12 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-archi-gray/50 rounded-full -translate-y-1/2 translate-x-1/2 -z-10" />
-        <h1 className="text-6xl font-black tracking-tighter mb-4 text-archi-black">STUDIO WORKSPACE</h1>
-        <p className="text-gray-400 text-lg font-light max-w-xl">Centralized management for your architectural projects, design iterations, and studio deadlines.</p>
+    <div className="space-y-12">
+      <header className="relative">
+        <div className="flex items-center gap-4 mb-4">
+          <span className="h-px w-8 bg-primary-500"></span>
+          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary-500">Overview</span>
+        </div>
+        <h1 className="text-5xl font-black tracking-tighter mb-4 text-[#111827] dark:text-white uppercase leading-none">
+          STUDIO <br /> <span className="text-primary-600 dark:text-primary-400">WORKSPACE</span>
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-lg font-medium max-w-2xl">
+          Centralized management for architectural projects, design iterations, and studio deadlines.
+        </p>
       </header>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        <Link to="/projects" className="bg-white border border-gray-100 p-8 transition-all hover:border-archi-black group">
-          <div className="flex justify-between items-start mb-6">
-            <div className="p-3 bg-archi-gray group-hover:bg-archi-black transition-colors">
-              <Folder size={24} className="text-archi-black group-hover:text-white transition-colors" />
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Total Projects</span>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Link to="/projects" className="bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-gray-800 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:border-primary-500/50 transition-all duration-500 group relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Folder size={64} />
           </div>
-          <p className="text-5xl font-black tracking-tighter">{stats.projects}</p>
-        </Link>
-        <Link to="/deadlines" className="bg-white border border-gray-100 p-8 transition-all hover:border-archi-black group">
-          <div className="flex justify-between items-start mb-6">
-            <div className="p-3 bg-archi-gray group-hover:bg-archi-black transition-colors">
-              <Calendar size={24} className="text-archi-black group-hover:text-white transition-colors" />
+          <div className="flex justify-between items-start mb-8">
+            <div className="p-3 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-xl group-hover:bg-primary-600 group-hover:text-white transition-all duration-500">
+              <Folder size={24} />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Active Deadlines</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Total Projects</span>
           </div>
-          <p className="text-5xl font-black tracking-tighter">{stats.deadlines}</p>
+          <p className="text-5xl font-black tracking-tighter text-[#111827] dark:text-white">{stats.projects}</p>
         </Link>
-        <Link to="/notes" className="bg-white border border-gray-100 p-8 transition-all hover:border-archi-black group">
-          <div className="flex justify-between items-start mb-6">
-            <div className="p-3 bg-archi-gray group-hover:bg-archi-black transition-colors">
-              <PenTool size={24} className="text-archi-black group-hover:text-white transition-colors" />
-            </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Design Log Entries</span>
+
+        <Link to="/deadlines" className="bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-gray-800 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:border-primary-500/50 transition-all duration-500 group relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Calendar size={64} />
           </div>
-          <p className="text-5xl font-black tracking-tighter">{stats.notes}</p>
-        </Link>
-        <Link to="/portfolio" className="bg-archi-black p-8 transition-all hover:bg-archi-dark-gray group">
-          <div className="flex justify-between items-start mb-6">
-            <div className="p-3 bg-white/10 group-hover:bg-white/20 transition-colors">
-              <Globe size={24} className="text-white" />
+          <div className="flex justify-between items-start mb-8">
+            <div className="p-3 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 rounded-xl group-hover:bg-orange-600 group-hover:text-white transition-all duration-500">
+              <Calendar size={24} />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Portfolio Status</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Active Deadlines</span>
+          </div>
+          <p className="text-5xl font-black tracking-tighter text-[#111827] dark:text-white">{stats.deadlines}</p>
+        </Link>
+
+        <Link to="/notes" className="bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-gray-800 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:border-primary-500/50 transition-all duration-500 group relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+            <PenTool size={64} />
+          </div>
+          <div className="flex justify-between items-start mb-8">
+            <div className="p-3 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
+              <PenTool size={24} />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500">Design Log</span>
+          </div>
+          <p className="text-5xl font-black tracking-tighter text-[#111827] dark:text-white">{stats.notes}</p>
+        </Link>
+
+        <Link to="/portfolio" className="bg-primary-600 dark:bg-primary-700 p-8 rounded-2xl shadow-xl shadow-primary-600/20 hover:bg-primary-700 dark:hover:bg-primary-600 transition-all duration-500 group relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-4 opacity-20 group-hover:opacity-40 transition-opacity text-white">
+            <Globe size={64} />
+          </div>
+          <div className="flex justify-between items-start mb-8">
+            <div className="p-3 bg-white/20 text-white rounded-xl">
+              <Globe size={24} />
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">Portfolio Status</span>
           </div>
           <p className="text-xl font-black tracking-tighter text-white uppercase mt-4">Live at /{username}</p>
-          <div className="mt-6 flex items-center gap-2 text-white/60 group-hover:text-white transition-colors">
-            <span className="text-[9px] font-bold uppercase tracking-widest">Open Public Link</span>
-            <ArrowRight size={12} />
+          <div className="mt-6 flex items-center gap-2 text-white/80 group-hover:text-white transition-all">
+            <span className="text-[9px] font-bold uppercase tracking-widest">Public Profile</span>
+            <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
           </div>
         </Link>
       </div>

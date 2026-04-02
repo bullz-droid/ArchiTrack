@@ -1,19 +1,5 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    {
-      "source": "/assets/(.*)",
-      "destination": "/assets/$1"
-    },
-    {
-      "source": "/favicon.svg",
-      "destination": "/favicon.svg"
-    },
-    {
-      "source": "/icons.svg",
-      "destination": "/icons.svg"
-    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
