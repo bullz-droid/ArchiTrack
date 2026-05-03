@@ -2,8 +2,20 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/assets/(.*)",
+      "destination": "/client/dist/assets/$1"
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": "/client/dist/favicon.svg"
+    },
+    {
+      "source": "/icons.svg",
+      "destination": "/client/dist/icons.svg"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/client/dist/index.html"
     }
   ]
 }
