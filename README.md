@@ -1,28 +1,34 @@
-# 🏗️ ArchiTrack
+# 🏗️ ArchiTrack | Studio Management Platform
 
-**The Digital Studio for Architecture Students.**
+ArchiTrack is a professional SaaS platform designed for architects and design students to manage projects, portfolios, and deadlines in a centralized workspace.
 
-ArchiTrack is a minimalist, high-performance platform designed to bridge the gap between studio workflow and professional portfolio presentation.
+## 🚀 Deployment Checklist (Get to 100%)
 
-## 🚀 Live Environment
+If you see "Failed to fetch" or 404 errors in production, follow these exact steps:
 
-* **Backend**: [Railway](https://railway.app)
-* **Frontend**: [Vercel](https://vercel.com)
-* **Database**: [Supabase](https://supabase.com)
+### 1. Vercel Dashboard Settings
+- **Root Directory**: Leave this **EMPTY**.
+- **Build Command**: `npm run build`
+- **Output Directory**: `client/dist`
 
-## 📁 Core Features
+### 2. Required Environment Variables
+Add these to your **Vercel Project Settings > Environment Variables**:
+- `VITE_SUPABASE_URL`: Your Supabase Project URL (starts with `https://`)
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
+- `VITE_API_URL`: Your Railway Backend URL (e.g., `https://architrack-production.up.railway.app/api`)
 
-* **STUDIO WORKSPACE**: Centralized dashboard with real-time deadline alerts and course-based project organization.
-* **ARCHI LIBRARY**: A professional asset manager for CAD exports, high-res renders, and studio PDFs. Supports signed URLs for secure sharing.
-* **DESIGN LOG**: A markdown-ready note system for capturing site analysis, concept iterations, and critique feedback.
-* **PORTFOLIO GENERATOR**: Instantly turn curated studio projects into a professional, public-facing gallery with a unique URL.
+### 3. Railway Backend Settings
+- Ensure your Railway project has a "Root Directory" of `server`.
+- Add your Vercel URL to the `FRONTEND_URL" environment variable on Railway.
 
-## 🛠️ Tech Stack
+## ✨ Features
+- **Modern SaaS UI**: Dark/Light mode support with a premium aesthetic.
+- **Project Management**: Track design iterations and deadlines.
+- **Public Portfolios**: Generate a live architectural showcase with one click.
+- **Secure Auth**: Powered by Supabase.
 
-* **Client**: React 18, Tailwind CSS (Custom Studio Theme), Lucide Icons, Axios.
-* **Server**: Node.js, Express.js.
-* **Auth & Data**: Supabase Auth (JWT), PostgreSQL (RLS enabled), Supabase Storage.
-* **Deployment**: CI/CD via GitHub to Railway (API) and Vercel (UI).
+---
+Built with ArchiTrack Studio Manager.
 
 ## ⚙️ Development Setup
 

@@ -10,6 +10,7 @@ import Notes from './pages/Notes.tsx';
 import Library from './pages/Library.tsx';
 import Portfolio from './pages/Portfolio.tsx';
 import PublicPortfolio from './pages/PublicPortfolio.tsx';
+import Profile from './pages/Profile.tsx';
 import Layout from './components/Layout';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -37,6 +38,7 @@ function App() {
           <Route path="/library" element={<ProtectedRoute><Library /></ProtectedRoute>} />
           <Route path="/portfolio" element={<ProtectedRoute><Portfolio /></ProtectedRoute>} />
           <Route path="/portfolio/:username" element={<PublicPortfolio />} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           
           <Route path="/" element={<Navigate to="/dashboard" />} />
         </Routes>

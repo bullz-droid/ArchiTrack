@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { supabase } from './supabase';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL && import.meta.env.PROD) {
+  console.error('CRITICAL: VITE_API_URL is not set in production! API calls will fail.');
+}
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_URL || 'http://localhost:5000/api',
 });
 
 api.interceptors.request.use(async (config) => {

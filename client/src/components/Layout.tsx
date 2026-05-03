@@ -100,8 +100,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </Link>
           <div className="pt-4 mt-4 border-t border-gray-50 dark:border-gray-800 space-y-1">
             <Link to="/portfolio" className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all group">
-              <User size={18} className="text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400" />
+              <Globe size={18} className="text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400" />
               <span>Portfolio Manager</span>
+            </Link>
+            <Link to="/profile" className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all group">
+              <User size={18} className="text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400" />
+              <span>Studio Profile</span>
             </Link>
             <Link to="/settings" className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all group">
               <Settings size={18} className="text-gray-400 group-hover:text-primary-600 dark:group-hover:text-primary-400" />
@@ -191,10 +195,17 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
             <div className="h-8 w-px bg-gray-100 dark:bg-gray-800 mx-2" />
 
-            <button className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all border border-transparent hover:border-gray-100 dark:hover:border-gray-700">
+            <button 
+              onClick={() => navigate('/profile')}
+              className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all border border-transparent hover:border-gray-100 dark:hover:border-gray-700"
+            >
               <span className="text-sm font-bold hidden md:block">{user?.user_metadata.username}</span>
-              <div className="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-xs font-bold shadow-md shadow-primary-600/20">
-                {user?.user_metadata.username?.charAt(0).toUpperCase()}
+              <div className="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-xs font-bold shadow-md shadow-primary-600/20 overflow-hidden">
+                {user?.user_metadata.avatar_url ? (
+                  <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  user?.user_metadata.username?.charAt(0).toUpperCase()
+                )}
               </div>
             </button>
           </div>
