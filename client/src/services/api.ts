@@ -3,8 +3,12 @@ import { supabase } from './supabase';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-if (!API_URL && import.meta.env.PROD) {
-  console.error('CRITICAL: VITE_API_URL is not set in production! API calls will fail.');
+if (import.meta.env.PROD) {
+  if (!API_URL) {
+    console.error('CRITICAL: VITE_API_URL is not set in production! API calls will fail.');
+  } else {
+    console.log('API Service initialized with URL:', API_URL);
+  }
 }
 
 const api = axios.create({

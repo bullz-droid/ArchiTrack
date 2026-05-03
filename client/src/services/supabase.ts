@@ -4,7 +4,9 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('CRITICAL: Supabase environment variables are missing! Registration and login will fail.')
+  console.error('CRITICAL: Supabase environment variables are missing! Registration and login will fail. Please check your .env file or Vercel dashboard.');
+} else {
+  console.log('Supabase client initialized with URL:', supabaseUrl.substring(0, 10) + '...');
 }
 
 export const supabase = createClient(

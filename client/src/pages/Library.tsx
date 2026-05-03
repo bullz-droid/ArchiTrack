@@ -8,9 +8,17 @@ import {
   Search, 
   Plus, 
   ExternalLink,
-  Share2
+  Share2,
+  Folder,
+  Filter,
+  Loader2,
+  Image as ImageIcon,
+  Grid,
+  List,
+  Upload
 } from 'lucide-react';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 
 const Library: React.FC = () => {
   const [files, setFiles] = useState([]);
@@ -18,6 +26,7 @@ const Library: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
   // Filters
   const [search, setSearch] = useState('');
@@ -44,8 +53,9 @@ const Library: React.FC = () => {
       ]);
       setFiles(filesRes.data);
       setProjects(projectsRes.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      toast.error('Failed to sync studio assets');
     } finally {
       setLoading(false);
     }
@@ -82,8 +92,10 @@ const Library: React.FC = () => {
             setUploadProgress(percentCompleted);
           }
         });
-      } catch (err) {
+        toast.success(`Uploaded ${selectedFiles[i].name}`);
+      } catch (err: any) {
         console.error('Upload failed:', err);
+        toast.error(`Failed to upload ${selectedFiles[i].name}`);
       }
     }
 
@@ -93,126 +105,116 @@ const Library: React.FC = () => {
   };
 
   const deleteFile = async (id: string) => {
-    if (window.confirm('Delete this studio asset permanently?')) {
-      try {
-        await api.delete(`/files/${id}`);
-        fetchData();
-      } catch (err) {
-        console.error(err);
-      }
-    }
-  };
-
-  const handleShare = async (id: string) => {
     try {
-      const res = await api.post(`/files/${id}/share`);
-      navigator.clipboard.writeText(res.data.signedUrl);
-      alert('Secure share link copied to clipboard! (Expires in 1 hour)');
-    } catch (err) {
-      console.error('Sharing failed:', err);
+      await api.delete(`/files/${id}`);
+      toast.success('Asset removed');
+      fetchData();
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Failed to remove asset');
     }
   };
 
-  const downloadFile = (url: string, name: string) => {
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', name);
-    link.setAttribute('target', '_blank');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const getFileIcon = (type: string) => {
+    if (type.startsWith('image/')) return <ImageIcon size={24} />;
+    if (type === 'application/pdf') return <FileText size={24} />;
+    return <File size={24} />;
   };
-
-  const filteredFiles = files.filter((f: any) => 
-    f.file_name.toLowerCase().includes(search.toLowerCase())
-  );
 
   return (
-    <div className="space-y-16 pb-32">
-      <header className="flex justify-between items-end border-b border-gray-100 pb-12">
-        <div>
-          <h1 className="text-6xl font-black tracking-tighter mb-4 text-archi-black uppercase">Archi Library</h1>
-          <p className="text-gray-400 text-lg font-light">Centralized asset management for all studio projects.</p>
+    <div className="space-y-12 pb-24">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="space-y-4">
+          <div className="flex items-center gap-4">
+            <span className="h-px w-8 bg-primary-500"></span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary-500">Resource Library</span>
+          </div>
+          <h1 className="text-5xl font-black tracking-tighter text-[#111827] dark:text-white uppercase leading-none">
+            Archi <span className="text-primary-600">Assets</span>
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 text-lg font-medium max-w-xl">
+            Centralized storage for drawings, site photos, and architectural references.
+          </p>
         </div>
         <div className="flex gap-4">
           <input 
             type="file" 
             multiple 
             className="hidden" 
-            ref={fileInputRef}
+            ref={fileInputRef} 
             onChange={handleUpload}
           />
           <button 
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className={`text-[10px] font-bold uppercase tracking-widest px-8 py-4 bg-archi-black text-white hover:bg-archi-dark-gray transition-all flex items-center gap-3 ${uploading ? 'opacity-50' : ''}`}
+            className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-8 rounded-2xl transition-all flex items-center gap-3 shadow-xl shadow-primary-600/20 active:scale-95 disabled:opacity-50"
           >
-            <Plus size={16} /> {uploading ? `Uploading ${uploadProgress}%` : 'Upload Assets'}
+            {uploading ? <Loader2 className="animate-spin" size={20} /> : <Upload size={20} />}
+            <span>{uploading ? `Uploading ${uploadProgress}%` : 'Upload Assets'}</span>
           </button>
         </div>
       </header>
 
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-8 bg-archi-gray/30 p-8 border border-gray-100">
-        <div className="flex-1 min-w-[300px] relative">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Search by filename..."
-            className="w-full bg-white border-0 py-4 pl-12 pr-4 text-sm font-light outline-none focus:ring-2 focus:ring-archi-black transition-all"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+      {/* Toolbar & Filters */}
+      <div className="bg-white dark:bg-[#1E293B] p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm space-y-6">
+        <div className="flex flex-col lg:flex-row gap-6 items-center justify-between">
+          <div className="relative flex-1 max-w-md w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input 
+              type="text" 
+              placeholder="Search assets..." 
+              className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="flex items-center gap-2 bg-gray-50 dark:bg-gray-900/50 p-1.5 rounded-xl">
+            <button 
+              onClick={() => setViewMode('grid')}
+              className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-primary-600' : 'text-gray-400 hover:text-gray-600'}`}
+            >
+              <Grid size={18} />
+            </button>
+            <button 
+              onClick={() => setViewMode('list')}
+              className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-[#1E293B] shadow-sm text-primary-600' : 'text-gray-400 hover:text-gray-600'}`}
+            >
+              <List size={18} />
+            </button>
+          </div>
         </div>
-        
-        <div className="flex flex-wrap items-center gap-6">
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Project</span>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-gray-50 dark:border-gray-800">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Studio Project</label>
             <select 
-              className="bg-white border-0 py-3 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-2 focus:ring-archi-black cursor-pointer"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
               value={selectedProject}
               onChange={(e) => setSelectedProject(e.target.value)}
             >
               <option value="">All Projects</option>
-              {projects.map((p: any) => (
-                <option key={p._id} value={p._id}>{p.title}</option>
-              ))}
+              {projects.map((p: any) => <option key={p._id} value={p._id}>{p.title}</option>)}
             </select>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Type</span>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Asset Type</label>
             <select 
-              className="bg-white border-0 py-3 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-2 focus:ring-archi-black cursor-pointer"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
             >
-              <option value="">All Types</option>
-              <option value="image">Images</option>
+              <option value="">All Formats</option>
+              <option value="image">Images / Renders</option>
               <option value="pdf">PDF Documents</option>
             </select>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Folder</span>
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Archive Sort</label>
             <select 
-              className="bg-white border-0 py-3 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-2 focus:ring-archi-black cursor-pointer"
-              value={selectedFolder}
-              onChange={(e) => setSelectedFolder(e.target.value)}
-            >
-              <option value="">All Folders</option>
-              <option value="General">General</option>
-              <option value="Drawings">Drawings</option>
-              <option value="Renders">Renders</option>
-              <option value="Models">Models</option>
-              <option value="Site">Site Analysis</option>
-            </select>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Sort</span>
-            <select 
-              className="bg-white border-0 py-3 px-4 text-[10px] font-bold uppercase tracking-widest outline-none focus:ring-2 focus:ring-archi-black cursor-pointer"
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
               value={dateSort}
               onChange={(e) => setDateSort(e.target.value)}
             >
@@ -220,90 +222,115 @@ const Library: React.FC = () => {
               <option value="oldest">Oldest First</option>
             </select>
           </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Studio Folder</label>
+            <select 
+              className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl text-xs font-bold outline-none focus:ring-2 focus:ring-primary-500/20 transition-all"
+              value={selectedFolder}
+              onChange={(e) => setSelectedFolder(e.target.value)}
+            >
+              <option value="">Root Library</option>
+              <option value="Site">Site Research</option>
+              <option value="Design">Design Iterations</option>
+              <option value="Final">Final Submission</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <div key={i} className="aspect-square bg-archi-gray animate-pulse" />)}
+        <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" : "space-y-4"}>
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+            <div key={i} className="h-48 bg-gray-100 dark:bg-gray-800 rounded-3xl animate-pulse" />
+          ))}
         </div>
-      ) : filteredFiles.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {filteredFiles.map((file: any) => (
-            <div key={file.id} className="group relative bg-white border border-gray-100 p-4 transition-all hover:border-archi-black">
-              <div className="aspect-square bg-archi-gray flex items-center justify-center mb-6 overflow-hidden relative">
-                {file.file_type.includes('image') ? (
-                  <img 
-                    src={file.file_url} 
-                    alt={file.file_name} 
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-110"
-                  />
-                ) : (
-                  <div className="flex flex-col items-center gap-4 text-gray-300">
-                    {file.file_type.includes('pdf') ? <FileText size={64} strokeWidth={1} /> : <File size={64} strokeWidth={1} />}
-                    <span className="text-[10px] uppercase font-black tracking-[0.3em]">{file.file_type.split('/')[1] || 'FILE'}</span>
+      ) : files.length > 0 ? (
+        <div className={viewMode === 'grid' ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" : "space-y-4"}>
+          {files.map((file: any) => (
+            <div 
+              key={file._id} 
+              className={`group bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-gray-800 rounded-3xl transition-all duration-500 hover:shadow-2xl hover:border-primary-500/50 overflow-hidden flex flex-col ${viewMode === 'list' ? 'md:flex-row md:items-center p-4 gap-6' : ''}`}
+            >
+              {viewMode === 'grid' && (
+                <div className="aspect-video bg-gray-50 dark:bg-gray-900/50 flex items-center justify-center relative overflow-hidden">
+                  {file.file_type.startsWith('image/') ? (
+                    <img src={file.file_url} alt={file.file_name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                  ) : (
+                    <div className="text-gray-300 dark:text-gray-700">
+                      {getFileIcon(file.file_type)}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <a href={file.file_url} target="_blank" rel="noopener noreferrer" className="p-3 bg-white text-primary-600 rounded-xl hover:bg-primary-50 transition-colors shadow-lg">
+                      <Download size={20} />
+                    </a>
+                    <button onClick={() => deleteFile(file._id)} className="p-3 bg-white text-red-500 rounded-xl hover:bg-red-50 transition-colors shadow-lg">
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className={`p-6 space-y-4 ${viewMode === 'list' ? 'flex-1 p-0 space-y-1' : ''}`}>
+                {viewMode === 'list' && (
+                  <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 bg-gray-50 dark:bg-gray-900/50 rounded-xl flex items-center justify-center text-primary-600 dark:text-primary-400">
+                      {getFileIcon(file.file_type)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-bold text-[#111827] dark:text-white truncate uppercase tracking-tight">{file.file_name}</h4>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">{file.folder || 'Root'} • {format(new Date(file.created_at), 'MMM d, yyyy')}</p>
+                    </div>
+                    <div className="hidden lg:block text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                      {file.project?.title || 'No Project'}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <a href={file.file_url} target="_blank" rel="noopener noreferrer" className="p-2.5 text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-xl transition-all">
+                        <Download size={18} />
+                      </a>
+                      <button onClick={() => deleteFile(file._id)} className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all">
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
                   </div>
                 )}
-                <div className="absolute inset-0 bg-archi-black/0 group-hover:bg-archi-black/5 transition-colors duration-500" />
-                
-                {/* Quick Actions Hover Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
-                  <button 
-                    onClick={() => downloadFile(file.file_url, file.file_name)}
-                    className="p-4 bg-white text-archi-black hover:bg-archi-black hover:text-white transition-all shadow-xl"
-                    title="Download"
-                  >
-                    <Download size={20} />
-                  </button>
-                  <button 
-                    onClick={() => handleShare(file.id)}
-                    className="p-4 bg-white text-archi-black hover:bg-archi-black hover:text-white transition-all shadow-xl"
-                    title="Share Link"
-                  >
-                    <Share2 size={20} />
-                  </button>
-                  <button 
-                    onClick={() => deleteFile(file.id)}
-                    className="p-4 bg-white text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-xl"
-                    title="Delete"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </div>
-              </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between items-start">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest truncate max-w-[150px]">{file.file_name}</h4>
-                  <a 
-                    href={file.file_url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-gray-300 hover:text-archi-black transition-colors"
-                  >
-                    <ExternalLink size={12} />
-                  </a>
-                </div>
-                <div className="flex justify-between items-center text-[9px] uppercase tracking-widest font-bold text-gray-400">
-                  <span>{format(new Date(file.created_at), 'MMM d, yyyy')}</span>
-                  <span className="text-archi-black/40">{file.folder || 'General'}</span>
-                </div>
-                <div className="text-[9px] uppercase tracking-widest font-bold text-gray-300 truncate">
-                  {file.projects?.title || 'GENERAL'}
-                </div>
+                {viewMode === 'grid' && (
+                  <>
+                    <div className="flex justify-between items-start">
+                      <div className="space-y-1 overflow-hidden">
+                        <h4 className="font-bold text-[#111827] dark:text-white truncate uppercase tracking-tight group-hover:text-primary-600 transition-colors">{file.file_name}</h4>
+                        <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold truncate">{file.project?.title || 'No Project'}</p>
+                      </div>
+                      <div className="px-2 py-1 bg-gray-50 dark:bg-gray-900/50 text-gray-400 text-[8px] font-bold uppercase tracking-widest rounded-lg border border-gray-100 dark:border-gray-800">
+                        {file.folder || 'Root'}
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-gray-50 dark:border-gray-800 flex justify-between items-center text-[9px] font-bold text-gray-400 uppercase tracking-widest">
+                      <span>{format(new Date(file.created_at), 'MMM d, yyyy')}</span>
+                      <Share2 size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="py-48 border border-dashed border-gray-200 text-center bg-gray-50/50">
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-300 mb-10 text-xl">No assets found in library</p>
+        <div className="py-32 text-center space-y-6 bg-white dark:bg-[#1E293B] rounded-3xl border border-dashed border-gray-200 dark:border-gray-800">
+          <div className="w-20 h-20 bg-gray-50 dark:bg-gray-900/50 rounded-full flex items-center justify-center mx-auto text-gray-300">
+            <Folder size={40} />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-[#111827] dark:text-white uppercase tracking-tighter">Library is Empty</h3>
+            <p className="text-gray-400 text-sm">Upload your architectural assets to start building your studio archive.</p>
+          </div>
           <button 
             onClick={() => fileInputRef.current?.click()}
-            className="text-[10px] font-bold uppercase tracking-widest px-12 py-5 bg-archi-black text-white hover:bg-archi-dark-gray transition-all"
+            className="text-primary-600 font-bold text-sm hover:underline"
           >
-            Upload Your First Asset
+            Upload your first file
           </button>
         </div>
       )}

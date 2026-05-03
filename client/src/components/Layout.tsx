@@ -15,7 +15,8 @@ import {
   Sun,
   Moon,
   Search,
-  Settings
+  Settings,
+  Globe
 } from 'lucide-react';
 import api from '../services/api';
 import { isBefore, addDays } from 'date-fns';
