@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
-import { Plus, Clock, MoreHorizontal, ArrowRight, LayoutGrid, List, Search, Filter, Folder, Calendar } from 'lucide-react';
+import { Plus, Clock, ArrowRight, LayoutGrid, List, Search, Filter, Folder } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Projects: React.FC = () => {
@@ -267,86 +267,6 @@ const Projects: React.FC = () => {
               >
                 Create Project
               </button>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default Projects;
-                    <div className="w-10 h-10 bg-archi-gray flex items-center justify-center text-[10px] font-bold">
-                      {project.files?.length || 0}
-                    </div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">Assets Uploaded</span>
-                  </div>
-                  <span className="text-[10px] font-bold uppercase tracking-widest flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-2">
-                    Open Project <ArrowRight size={14} />
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="py-48 border border-dashed border-gray-200 text-center bg-gray-50/50">
-          <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-gray-300 mb-10 text-xl">The library is empty</p>
-          <button onClick={() => setShowModal(true)} className="text-[10px] font-bold uppercase tracking-widest px-12 py-5 bg-archi-black text-white hover:bg-archi-dark-gray transition-all">Start Your First Design</button>
-        </div>
-      )}
-
-      {/* Create Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-archi-black/60 backdrop-blur-md flex items-center justify-center z-50 p-6">
-          <div className="bg-white max-w-xl w-full p-16 relative shadow-2xl">
-            <h2 className="text-4xl font-black tracking-tighter mb-10 uppercase">New Project Entry</h2>
-            <form onSubmit={handleCreate} className="space-y-8">
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3">Project Title</label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-0 py-3 border-b-2 border-gray-100 focus:border-archi-black outline-none transition-colors text-xl font-bold tracking-tight"
-                  placeholder="e.g., Vertical Housing Studio"
-                  value={newProject.title}
-                  onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3">Course / Unit</label>
-                  <input
-                    type="text"
-                    className="w-full px-0 py-3 border-b-2 border-gray-100 focus:border-archi-black outline-none transition-colors text-sm font-bold uppercase tracking-widest"
-                    placeholder="ARC-401"
-                    value={newProject.course}
-                    onChange={(e) => setNewProject({ ...newProject, course: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3">Submission Deadline</label>
-                  <input
-                    type="date"
-                    className="w-full px-0 py-3 border-b-2 border-gray-100 focus:border-archi-black outline-none transition-colors text-sm font-bold"
-                    value={newProject.deadline}
-                    onChange={(e) => setNewProject({ ...newProject, deadline: e.target.value })}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-3">Design Description</label>
-                <textarea
-                  className="w-full px-4 py-4 bg-archi-gray/50 border-0 focus:ring-2 focus:ring-archi-black outline-none h-32 text-sm font-light leading-relaxed"
-                  placeholder="Outline the architectural intent..."
-                  value={newProject.description}
-                  onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                />
-              </div>
-              <div className="flex gap-4 pt-6">
-                <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-4 text-[10px] font-bold uppercase tracking-widest border border-gray-200 hover:bg-gray-50 transition-colors">Discard</button>
-                <button type="submit" className="flex-1 py-4 text-[10px] font-bold uppercase tracking-widest bg-archi-black text-white hover:bg-archi-dark-gray transition-all">Initialize</button>
-              </div>
             </form>
           </div>
         </div>

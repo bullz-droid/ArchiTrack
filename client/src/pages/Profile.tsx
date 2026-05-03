@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../services/supabase';
-import { User, Mail, Briefcase, Camera, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { User, Camera, CheckCircle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Profile: React.FC = () => {
-  const { user, session } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const [updating, setUpdating] = useState(false);
   const [profile, setProfile] = useState({
     username: '',
