@@ -6,7 +6,7 @@
     "start": "npm run dev",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",
-    "build": "cd client && npm install --include=dev && npm run build && cd .. && mkdir -p public && cp -rv client/dist/* public/",
+    "build": "cd client && npm install --include=dev && npm run build && cd .. && rm -rf public && mkdir -p public && cp -rv client/dist/* public/",
     "install-all": "npm install && cd server && npm install && cd ../client && npm install"
   },
   "devDependencies": {
