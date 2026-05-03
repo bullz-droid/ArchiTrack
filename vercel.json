@@ -1,21 +1,14 @@
 {
   "version": 2,
+  "public": true,
   "rewrites": [
     {
-      "source": "/assets/(.*)",
-      "destination": "/client/dist/assets/$1"
-    },
-    {
-      "source": "/favicon.svg",
-      "destination": "/client/dist/favicon.svg"
-    },
-    {
-      "source": "/icons.svg",
-      "destination": "/client/dist/icons.svg"
+      "source": "/(.*)",
+      "destination": "/dist/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "/client/dist/index.html"
+      "destination": "/dist/index.html"
     }
   ]
 }
