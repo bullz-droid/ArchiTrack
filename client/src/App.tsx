@@ -1,16 +1,16 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
-import Login from './pages/Login.tsx';
-import Register from './pages/Register.tsx';
-import Dashboard from './pages/Dashboard.tsx';
-import Projects from './pages/Projects.tsx';
-import ProjectDetail from './pages/ProjectDetail.tsx';
-import Deadlines from './pages/Deadlines.tsx';
-import Notes from './pages/Notes.tsx';
-import Library from './pages/Library.tsx';
-import Portfolio from './pages/Portfolio.tsx';
-import PublicPortfolio from './pages/PublicPortfolio.tsx';
-import Profile from './pages/Profile.tsx';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
+import Deadlines from './pages/Deadlines';
+import Notes from './pages/Notes';
+import Library from './pages/Library';
+import Portfolio from './pages/Portfolio';
+import PublicPortfolio from './pages/PublicPortfolio';
+import Profile from './pages/Profile';
 import Layout from './components/Layout';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
