@@ -16,9 +16,21 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Launch Chrome against localhost",
-            "url": "http://localhost:8080",
-            "webRoot": "${workspaceFolder}"
+            "name": "Debug ArchiTrack (Chrome)",
+            "url": "http://localhost:5353",
+            "webRoot": "${workspaceFolder}/client",
+            "userDataDir": false,
+            "runtimeArgs": [
+                "--remote-debugging-port=9222"
+            ]
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Debug ArchiTrack (Edge)",
+            "url": "http://localhost:5353",
+            "webRoot": "${workspaceFolder}/client",
+            "userDataDir": false
         }
     ]
 }
