@@ -3,6 +3,8 @@ import { Box, Button, Grid, TextField, Typography, Stack, Divider } from '@mui/m
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useAuth } from '@/context/AuthContext'
+import { supabase } from '@/services/supabase'
+import AntiGravityScene from '@/components/auth/AntiGravityScene'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -28,7 +30,8 @@ const Login = () => {
   })
 
   return (
-    <Box sx={{ display: 'grid', gap: 3 }}>
+    <Box sx={{ display: 'grid', gap: 3, position: 'relative', minHeight: '100vh' }}>
+      <AntiGravityScene />
       <Box>
         <Typography variant="h4">Sign in</Typography>
         <Typography color="text.secondary">Continue to your architect-client workspace.</Typography>
@@ -49,8 +52,42 @@ const Login = () => {
           <Grid item xs={12}>
             <Divider />
             <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 2 }}>
-              <Button variant="outlined">Continue with Google</Button>
-              <Button variant="outlined">Continue with LinkedIn</Button>
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={async () => {
+                  try {
+                    const redirectTo = `${window.location.origin}/auth/login`
+                    const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
+                    if (error) throw error
+                    if (data?.url) window.location.assign(data.url)
+                  } catch (err) {
+                    // show toast or console for now
+                    // eslint-disable-next-line no-console
+                    console.error('Google OAuth failed', err)
+                  }
+                }}
+              >
+                Continue with Google
+              </Button>
+
+              <Button
+                type="button"
+                variant="outlined"
+                onClick={async () => {
+                  try {
+                    const redirectTo = `${window.location.origin}/auth/login`
+                    const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'linkedin', options: { redirectTo } })
+                    if (error) throw error
+                    if (data?.url) window.location.assign(data.url)
+                  } catch (err) {
+                    // eslint-disable-next-line no-console
+                    console.error('LinkedIn OAuth failed', err)
+                  }
+                }}
+              >
+                Continue with LinkedIn
+              </Button>
             </Stack>
           </Grid>
           <Grid item xs={12}>

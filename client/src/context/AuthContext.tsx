@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { authApi, refreshAuthToken, saveTokens, setAuthToken } from '../services/api'
+import { supabase } from '@/services/supabase'
 import type { LoginPayload, RegisterPayload, User } from '@/types'
 
 interface AuthContextType {
@@ -22,6 +23,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
+      // If redirected back from Supabase OAuth, parse session from URL and persist it.
+      try {
+        const { data, error } = await supabase.auth.getSessionFromUrl({ storeSession: true })
+        if (error) {
+          // ignore - not every load is an OAuth callback
+        } else if (data?.session) {
+          const newToken = data.session.access_token
+          const newRefresh = data.session.refresh_token
+          if (newToken) {
+            localStorage.setItem('archiconnect_token', newToken)
+            if (newRefresh) localStorage.setItem('archiconnect_refresh_token', newRefresh)
+            setAuthToken(newToken)
+            setToken(newToken)
+            try {
+              const me = await authApi.getMe()
+              setUser(me.user)
+            } catch {
+              // if server-side user fetch fails, proceed to normal flow
+            }
+          }
+        }
+      } catch (err) {
+        // ignore
+      }
       if (token) {
         setAuthToken(token)
         try {

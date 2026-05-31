@@ -11,6 +11,7 @@ import Matching from './pages/Matching'
 import ProjectUpload from './pages/ProjectUpload'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import AuthCallback from './pages/AuthCallback'
 import NotFound from './pages/NotFound'
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
@@ -32,6 +33,7 @@ function App() {
     <Routes>
       <Route path="/auth" element={<AuthLayout />}>
         <Route path="login" element={<Login />} />
+        <Route path="callback" element={<AuthCallback />} />
         <Route path="register" element={<Register />} />
       </Route>
 
