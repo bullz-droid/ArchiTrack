@@ -57,7 +57,7 @@ const Login = () => {
                 variant="outlined"
                 onClick={async () => {
                   try {
-                    const redirectTo = `${window.location.origin}/auth/login`
+                    const redirectTo = `${window.location.origin}/auth/callback`
                     const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
                     if (error) throw error
                     if (data?.url) window.location.assign(data.url)
@@ -76,7 +76,7 @@ const Login = () => {
                 variant="outlined"
                 onClick={async () => {
                   try {
-                    const redirectTo = `${window.location.origin}/auth/login`
+                    const redirectTo = `${window.location.origin}/auth/callback`
                     const { data, error } = await supabase.auth.signInWithOAuth({ provider: 'linkedin', options: { redirectTo } })
                     if (error) throw error
                     if (data?.url) window.location.assign(data.url)

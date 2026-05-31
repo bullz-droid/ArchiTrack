@@ -17,9 +17,14 @@ Add these to your **Vercel Project Settings > Environment Variables**:
 - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
 - `VITE_API_URL`: Your Railway Backend URL (e.g., `https://architrack-production.up.railway.app/api`)
 
+### 2.1 Supabase Redirect URIs
+In the Supabase Dashboard, add the following redirect URIs to Google auth and any OAuth providers:
+- `http://localhost:5353/auth/callback`
+- `https://Architrack-app.vercel.app/auth/callback`
+
 ### 3. Railway Backend Settings
 - Ensure your Railway project has a "Root Directory" of `server`.
-- Add your Vercel URL to the `FRONTEND_URL" environment variable on Railway.
+- Add your Vercel URL to the `FRONTEND_URL` environment variable on Railway.
 
 ## ✨ Features
 - **Modern SaaS UI**: Dark/Light mode support with a premium aesthetic.

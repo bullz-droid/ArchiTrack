@@ -1,9 +1,24 @@
 'use client'
 
 import { useMemo, useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
+import { Canvas, useFrame, extend, useThree } from '@react-three/fiber'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { Color, Vector3 } from 'three'
+
+extend({ OrbitControls })
+
+function Controls() {
+  const controls = useRef<any>(null)
+  const { camera, gl } = useThree()
+
+  useFrame(() => {
+    if (controls.current) {
+      controls.current.update()
+    }
+  })
+
+  return <orbitControls ref={controls} args={[camera, gl.domElement]} enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.2} />
+}
 
 function useGravitySpring(target: Vector3, position: Vector3, velocity: Vector3) {
   const stiffness = 4.5
@@ -115,7 +130,7 @@ export default function AntiGravityScene() {
           pointer={pointer}
         />
 
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.2} />
+        <Controls />
       </Canvas>
     </div>
   )
