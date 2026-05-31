@@ -85,10 +85,10 @@ const Library: React.FC = () => {
       try {
         await api.post('/files/upload', formData, {
           onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
-            setUploadProgress(percentCompleted);
-          }
-        });
+            const percentCompleted = Math.round((progressEvent.loaded ?? 0) * 100 / (progressEvent.total ?? 1))
+            setUploadProgress(percentCompleted)
+          },
+        })
         toast.success(`Uploaded ${selectedFiles[i].name}`);
       } catch (err: any) {
         console.error('Upload failed:', err);

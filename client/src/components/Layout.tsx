@@ -118,10 +118,10 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="p-4 border-t border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-xl bg-gray-50 dark:bg-gray-800/50">
             <div className="w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center text-sm font-bold shadow-lg shadow-primary-600/20">
-              {user?.user_metadata.username?.charAt(0).toUpperCase()}
+              {user?.user_metadata?.username?.charAt(0).toUpperCase()}
             </div>
             <div className="overflow-hidden">
-              <p className="text-sm font-bold truncate">{user?.user_metadata.username}</p>
+              <p className="text-sm font-bold truncate">{user?.user_metadata?.username ?? 'Guest'}</p>
               <p className="text-[10px] text-gray-400 dark:text-gray-500 truncate font-medium">{user?.email}</p>
             </div>
           </div>
@@ -200,12 +200,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               onClick={() => navigate('/profile')}
               className="flex items-center gap-3 pl-2 pr-1 py-1 rounded-full hover:bg-gray-50 dark:hover:bg-gray-800 transition-all border border-transparent hover:border-gray-100 dark:hover:border-gray-700"
             >
-              <span className="text-sm font-bold hidden md:block">{user?.user_metadata.username}</span>
+              <span className="text-sm font-bold hidden md:block">{user?.user_metadata?.username ?? 'Guest'}</span>
               <div className="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center text-xs font-bold shadow-md shadow-primary-600/20 overflow-hidden">
-                {user?.user_metadata.avatar_url ? (
+                {user?.user_metadata?.avatar_url ? (
                   <img src={user.user_metadata.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  user?.user_metadata.username?.charAt(0).toUpperCase()
+                  user?.user_metadata?.username?.charAt(0).toUpperCase() ?? 'G'
                 )}
               </div>
             </button>

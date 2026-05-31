@@ -1,146 +1,223 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { supabase } from '../services/supabase';
-import { User, Camera, CheckCircle, Loader2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState } from 'react'
+import { Camera, CheckCircle, Loader2, User as UserIcon } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { supabase } from '../services/supabase'
+import type { UserMetadata } from '@/types'
+
+type ProfileFormData = {
+  username: string
+  full_name: string
+  role: string
+  bio: string
+  avatar_url: string
+}
+
+const defaultProfile: ProfileFormData = {
+  username: '',
+  full_name: '',
+  role: 'Architect',
+  bio: '',
+  avatar_url: '',
+}
 
 const Profile: React.FC = () => {
-  const { user } = useAuth();
-  const [updating, setUpdating] = useState(false);
-  const [profile, setProfile] = useState({
-    username: '',
-    full_name: '',
-    role: 'Architect',
-    bio: '',
-    avatar_url: ''
-  });
+  const [profile, setProfile] = useState<ProfileFormData>(defaultProfile)
+  const [loading, setLoading] = useState(true)
+  const [updating, setUpdating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (user) {
-      setProfile({
-        username: user.user_metadata?.username || '',
-        full_name: user.user_metadata?.full_name || '',
-        role: user.user_metadata?.role || 'Architect',
-        bio: user.user_metadata?.bio || '',
-        avatar_url: user.user_metadata?.avatar_url || ''
-      });
-    }
-  }, [user]);
+    const loadProfile = async () => {
+      setLoading(true)
+      setError(null)
 
-  const handleUpdate = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUpdating(true);
-    
+      const { data, error } = await supabase.auth.getUser()
+      if (error) {
+        setError(error.message)
+        setLoading(false)
+        return
+      }
+
+      const metadata = data.user?.user_metadata as UserMetadata | null
+      if (!data.user) {
+        setError('No authenticated Supabase user found.')
+        setLoading(false)
+        return
+      }
+
+      setProfile({
+        username: metadata?.username ?? '',
+        full_name: metadata?.full_name ?? '',
+        role: metadata?.role ?? 'Architect',
+        bio: metadata?.bio ?? '',
+        avatar_url: metadata?.avatar_url ?? '',
+      })
+      setLoading(false)
+    }
+
+    loadProfile()
+  }, [])
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = event.target
+    setProfile((current) => ({ ...current, [name]: value }))
+  }
+
+  const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setUpdating(true)
+    setError(null)
+
     try {
       const { error } = await supabase.auth.updateUser({
-        data: profile
-      });
+        data: {
+          username: profile.username,
+          full_name: profile.full_name,
+          role: profile.role,
+          bio: profile.bio,
+          avatar_url: profile.avatar_url,
+        },
+      })
 
-      if (error) throw error;
-      toast.success('Profile updated successfully');
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to update profile');
+      if (error) throw error
+
+      toast.success('Profile updated successfully.')
+    } catch (updateError) {
+      const message = updateError instanceof Error ? updateError.message : 'Unable to save profile.'
+      setError(message)
+      toast.error(message)
     } finally {
-      setUpdating(false);
+      setUpdating(false)
     }
-  };
+  }
 
-  return (
-    <div className="max-w-4xl mx-auto space-y-12">
-      <header>
-        <div className="flex items-center gap-4 mb-4">
-          <span className="h-px w-8 bg-primary-500"></span>
-          <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary-500">Account Settings</span>
-        </div>
-        <h1 className="text-5xl font-black tracking-tighter text-[#111827] dark:text-white uppercase">Studio <span className="text-primary-600">Profile</span></h1>
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        {/* Avatar Section */}
-        <div className="space-y-6">
-          <div className="relative group w-full aspect-square bg-gray-100 dark:bg-gray-800 rounded-3xl overflow-hidden flex items-center justify-center border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/50 dark:shadow-none transition-all hover:border-primary-500/50">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-            ) : (
-              <User size={64} className="text-gray-300" />
-            )}
-            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-              <Camera className="text-white" size={32} />
-            </div>
-          </div>
-          <div className="text-center space-y-2">
-            <h3 className="font-bold text-xl">{profile.username || 'Studio Member'}</h3>
-            <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">{profile.role}</p>
-          </div>
-        </div>
-
-        {/* Form Section */}
-        <div className="md:col-span-2">
-          <form onSubmit={handleUpdate} className="bg-white dark:bg-[#1E293B] p-10 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-xl shadow-gray-200/50 dark:shadow-none space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Username</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300" size={16} />
-                  <input 
-                    type="text"
-                    value={profile.username}
-                    onChange={(e) => setProfile({...profile, username: e.target.value})}
-                    className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Full Name</label>
-                <input 
-                  type="text"
-                  value={profile.full_name}
-                  onChange={(e) => setProfile({...profile, full_name: e.target.value})}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-                  placeholder="John Doe"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Professional Role</label>
-              <select 
-                value={profile.role}
-                onChange={(e) => setProfile({...profile, role: e.target.value})}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl focus:ring-2 focus:ring-primary-500/20 outline-none transition-all"
-              >
-                <option value="Architect">Architect</option>
-                <option value="Interior Designer">Interior Designer</option>
-                <option value="Landscape Architect">Landscape Architect</option>
-                <option value="Urban Planner">Urban Planner</option>
-                <option value="Student">Student</option>
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400">Bio / Design Philosophy</label>
-              <textarea 
-                rows={4}
-                value={profile.bio}
-                onChange={(e) => setProfile({...profile, bio: e.target.value})}
-                className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900/50 border-none rounded-xl focus:ring-2 focus:ring-primary-500/20 outline-none transition-all resize-none"
-                placeholder="Brief description of your style or expertise..."
-              />
-            </div>
-
-            <button 
-              type="submit"
-              disabled={updating}
-              className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-3 shadow-lg shadow-primary-600/20 disabled:opacity-50"
-            >
-              {updating ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
-              <span>{updating ? 'Saving Changes...' : 'Save Profile Settings'}</span>
-            </button>
-          </form>
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] grid place-items-center text-slate-500">
+        <div className="flex items-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          Loading profile…
         </div>
       </div>
-    </div>
-  );
-};
+    )
+  }
 
-export default Profile;
+  return (
+    <div className="max-w-5xl mx-auto space-y-10 px-4 py-8">
+      <header>
+        <div className="flex items-center gap-3 mb-3">
+          <span className="h-px w-8 bg-blue-600"></span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-blue-600">Account Settings</span>
+        </div>
+        <h1 className="text-4xl font-black tracking-tight text-slate-900">
+          Studio <span className="text-blue-600">Profile</span>
+        </h1>
+      </header>
+
+      {error ? (
+        <div className="rounded-3xl border border-red-200 bg-red-50 px-6 py-4 text-sm text-red-700">
+          {error}
+        </div>
+      ) : null}
+
+      <div className="grid gap-10 md:grid-cols-3">
+        <section className="space-y-6">
+          <div className="group relative overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 p-8 text-center shadow-sm">
+            {profile.avatar_url ? (
+              <img src={profile.avatar_url} alt="Avatar" className="mx-auto h-32 w-32 rounded-full object-cover" />
+            ) : (
+              <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full bg-slate-200 text-slate-500">
+                <UserIcon size={36} />
+              </div>
+            )}
+
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition duration-300 group-hover:bg-black/30">
+              <Camera className="h-6 w-6 text-white opacity-0 transition duration-300 group-hover:opacity-100" />
+            </div>
+
+            <div className="space-y-2 pt-8">
+              <h2 className="text-xl font-semibold text-slate-900">{profile.username || 'Studio Member'}</h2>
+              <p className="text-xs uppercase tracking-[0.3em] text-slate-500">{profile.role}</p>
+            </div>
+          </div>
+        </section>
+
+        <form
+          onSubmit={handleUpdate}
+          className="md:col-span-2 space-y-8 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm"
+        >
+          <div className="grid gap-6 md:grid-cols-2">
+            <label className="space-y-2">
+              <span className="text-xs uppercase tracking-[0.24em] text-slate-500">Username</span>
+              <input
+                name="username"
+                value={profile.username}
+                onChange={handleInputChange}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </label>
+            <label className="space-y-2">
+              <span className="text-xs uppercase tracking-[0.24em] text-slate-500">Full Name</span>
+              <input
+                name="full_name"
+                value={profile.full_name}
+                onChange={handleInputChange}
+                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              />
+            </label>
+          </div>
+
+          <label className="space-y-2">
+            <span className="text-xs uppercase tracking-[0.24em] text-slate-500">Professional Role</span>
+            <select
+              name="role"
+              value={profile.role}
+              onChange={handleInputChange}
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="Architect">Architect</option>
+              <option value="Interior Designer">Interior Designer</option>
+              <option value="Landscape Architect">Landscape Architect</option>
+              <option value="Urban Planner">Urban Planner</option>
+              <option value="Student">Student</option>
+            </select>
+          </label>
+
+          <label className="space-y-2">
+            <span className="text-xs uppercase tracking-[0.24em] text-slate-500">Bio / Design Philosophy</span>
+            <textarea
+              name="bio"
+              rows={5}
+              value={profile.bio}
+              onChange={handleInputChange}
+              className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              placeholder="Share a short description of your design approach."
+            />
+          </label>
+
+          <button
+            type="submit"
+            disabled={updating}
+            className="inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-blue-600 px-6 py-4 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {updating ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Saving…
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4" />
+                Save profile
+              </>
+            )}
+          </button>
+        </form>
+      </div>
+    </div>
+  )
+}
+
+export default Profile
