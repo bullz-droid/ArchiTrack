@@ -103,3 +103,34 @@ exports.getMe = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.refresh = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(400).json({ message: 'refreshToken is required' });
+    }
+
+    const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
+    if (error || !data.session || !data.user) {
+      return res.status(401).json({ message: error?.message || 'Unable to refresh session' });
+    }
+
+    const token = data.session.access_token || null;
+    const newRefreshToken = data.session.refresh_token || null;
+    const expiresIn = data.session.expires_in || null;
+
+    res.json({
+      token,
+      refreshToken: newRefreshToken,
+      expiresIn,
+      user: {
+        id: data.user.id,
+        username: data.user.user_metadata?.username || data.user.email.split('@')[0],
+        email: data.user.email,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

@@ -1,56 +1,103 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { supabase } from '../services/supabase';
-import type { Session, User } from '@supabase/supabase-js';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { authApi, refreshAuthToken, saveTokens, setAuthToken } from '../services/api'
+import type { LoginPayload, RegisterPayload, User } from '@/types'
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  loading: boolean;
+  user: User | null
+  token: string | null
+  loading: boolean
+  login: (payload: LoginPayload) => Promise<void>
+  register: (payload: RegisterPayload) => Promise<void>
+  logout: () => void
+  refreshUser: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const TOKEN_KEY = 'archiconnect_token'
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem(TOKEN_KEY))
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const getSession = async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-        setSession(data.session);
-        setUser(data.session?.user ?? null);
-      } catch (error) {
-        console.error('Error fetching session:', error);
-      } finally {
-        setLoading(false);
+    const initializeAuth = async () => {
+      if (token) {
+        setAuthToken(token)
+        try {
+          const data = await authApi.getMe()
+          setUser(data.user)
+        } catch (error) {
+          const newToken = await refreshAuthToken()
+          if (newToken) {
+            setToken(newToken)
+            try {
+              const data = await authApi.getMe()
+              setUser(data.user)
+            } catch {
+              setUser(null)
+              setToken(null)
+              localStorage.removeItem(TOKEN_KEY)
+              setAuthToken(null)
+            }
+          } else {
+            setUser(null)
+            setToken(null)
+            localStorage.removeItem(TOKEN_KEY)
+            localStorage.removeItem('archiconnect_refresh_token')
+            setAuthToken(null)
+          }
+        }
       }
-    };
+      setLoading(false)
+    }
 
-    getSession();
+    initializeAuth()
+  }, [token])
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-    });
+  const login = async (payload: LoginPayload) => {
+    const data = await authApi.login(payload)
+    setUser(data.user)
+    setToken(data.token)
+    saveTokens(data.token, data.refreshToken || null)
+  }
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
+  const register = async (payload: RegisterPayload) => {
+    const data = await authApi.register(payload)
+    setUser(data.user)
+    setToken(data.token)
+    saveTokens(data.token, data.refreshToken || null)
+  }
 
-  return (
-    <AuthContext.Provider value={{ user, session, loading }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  const logout = () => {
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem('archiconnect_refresh_token')
+    setAuthToken(null)
+    setUser(null)
+    setToken(null)
+  }
+
+  const refreshUser = async () => {
+    try {
+      const data = await authApi.getMe()
+      setUser(data.user)
+    } catch (error) {
+      logout()
+    }
+  }
+
+  const value = useMemo(
+    () => ({ user, token, loading, login, register, logout, refreshUser }),
+    [user, token, loading],
+  )
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+}
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return context;
-};
+  return context
+}
