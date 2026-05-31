@@ -29,8 +29,14 @@ exports.register = async (req, res) => {
 
     if (pError) throw pError;
     
+    const token = data.session?.access_token || null
+    const refreshToken = data.session?.refresh_token || null
+    const expiresIn = data.session?.expires_in || null
+
     res.status(201).json({ 
-      session: data.session, 
+      token,
+      refreshToken,
+      expiresIn,
       user: { 
         id: data.user.id, 
         username: data.user.user_metadata?.username || username, 
@@ -70,8 +76,14 @@ exports.login = async (req, res) => {
         }]);
     }
 
+    const token = data.session?.access_token || null
+    const refreshToken = data.session?.refresh_token || null
+    const expiresIn = data.session?.expires_in || null
+
     res.json({ 
-      session: data.session, 
+      token,
+      refreshToken,
+      expiresIn,
       user: { 
         id: data.user.id, 
         username: data.user.user_metadata?.username, 
@@ -86,7 +98,7 @@ exports.login = async (req, res) => {
 exports.getMe = async (req, res) => {
   try {
     // req.user is already populated by authMiddleware using supabase.auth.getUser()
-    res.json(req.user);
+    res.json({ user: req.user });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
