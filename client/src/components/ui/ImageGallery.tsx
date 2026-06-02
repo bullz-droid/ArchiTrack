@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Dialog, DialogContent, DialogTitle, ImageList, ImageListItem, IconButton } from '@mui/material'
+import { Dialog, DialogContent, DialogTitle, ImageList, ImageListItem, IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 
 const _icon = (m: any) => (m && m.default) ? m.default : m
@@ -13,7 +13,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
   const [selected, setSelected] = useState<string | null>(null)
 
   return (
-    <Box>
+    <div>
       <ImageList variant="masonry" cols={3} gap={8}>
         {images.map((image) => (
           <ImageListItem key={image} sx={{ cursor: 'pointer' }} onClick={() => setSelected(image)}>
@@ -32,7 +32,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
           {selected && <img src={selected} alt="Selected asset" style={{ width: '100%', borderRadius: 16 }} />}
         </DialogContent>
       </Dialog>
-    </Box>
+    </div>
   )
 }
 

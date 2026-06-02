@@ -1,33 +1,18 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { Color, Vector3 } from 'three'
+import { useMemo, useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
+import { Color, Group, Vector3 } from 'three'
+
+type FloatingBodyProps = {
+  geometry: JSX.Element
+  initial: [number, number, number]
+  pointer: Vector3
+}
 
 function Controls() {
-  const controls = useRef<OrbitControls | null>(null)
-  const { camera, gl } = useThree()
-
-  useEffect(() => {
-    const orbitControls = new OrbitControls(camera, gl.domElement)
-    orbitControls.enableZoom = false
-    orbitControls.enablePan = false
-    orbitControls.autoRotate = true
-    orbitControls.autoRotateSpeed = 0.2
-    controls.current = orbitControls
-
-    return () => {
-      orbitControls.dispose()
-      controls.current = null
-    }
-  }, [camera, gl.domElement])
-
-  useFrame(() => {
-    controls.current?.update()
-  })
-
-  return null
+  return <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.2} />
 }
 
 function applyGravitySpring(target: Vector3, position: Vector3, velocity: Vector3) {
@@ -39,8 +24,8 @@ function applyGravitySpring(target: Vector3, position: Vector3, velocity: Vector
   position.add(velocity)
 }
 
-function FloatingBody({ geometry, initial, pointer }: any) {
-  const ref = useRef<any>(null)
+function FloatingBody({ geometry, initial, pointer }: FloatingBodyProps) {
+  const ref = useRef<Group | null>(null)
   const velocity = useRef(new Vector3((Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.02)).current
 
   useFrame(() => {

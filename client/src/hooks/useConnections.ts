@@ -13,7 +13,7 @@ export const useConnections = () => {
       const response = await connectionsApi.list()
       setConnections(response.data)
       setError(null)
-    } catch (err) {
+    } catch (_err) {
       setError('Unable to load connections.')
     } finally {
       setLoading(false)

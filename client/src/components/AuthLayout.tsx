@@ -1,18 +1,18 @@
-import { Box, Paper, Typography } from '@mui/material'
+import { Paper, Typography } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 
 const AuthLayout = () => {
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         minHeight: '100vh',
         display: 'grid',
         placeItems: 'center',
         background: 'linear-gradient(180deg, #F5F6FA 0%, #FFFFFF 100%)',
-        px: 2,
+        paddingInline: 16,
       }}
     >
-      <Paper elevation={12} sx={{ width: '100%', maxWidth: 520, p: 4, borderRadius: 4 }}>
+      <Paper elevation={12} style={{ width: '100%', maxWidth: 520, padding: 32, borderRadius: 24 }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Welcome to ArchiConnect
         </Typography>
@@ -21,7 +21,7 @@ const AuthLayout = () => {
         </Typography>
         <Outlet />
       </Paper>
-    </Box>
+    </div>
   )
 }
 

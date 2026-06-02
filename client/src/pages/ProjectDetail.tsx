@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { ArrowLeft, File, FileText, Trash2, CheckCircle, ExternalLink, Plus, History, Share2 } from 'lucide-react';
@@ -10,21 +10,21 @@ const ProjectDetail: React.FC = () => {
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     try {
-      const res = await api.get(`/projects/${id}`);
-      setProject(res.data);
+      const res = await api.get(`/projects/${id}`)
+      setProject(res.data)
     } catch (err) {
-      console.error(err);
-      navigate('/projects');
+      console.error(err)
+      navigate('/projects')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [id, navigate])
 
   useEffect(() => {
-    fetchProject();
-  }, [id]);
+    fetchProject()
+  }, [fetchProject])
 
   const [uploading, setUploading] = useState(false);
 

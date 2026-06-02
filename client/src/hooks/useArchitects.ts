@@ -22,7 +22,7 @@ export const useArchitects = (initialFilters: ArchitectFilters = defaultFilters)
       const response = await architectsApi.list(filters)
       setArchitects(response.data)
       setError(null)
-    } catch (err) {
+    } catch (_err) {
       setError('Unable to fetch architects.')
     } finally {
       setLoading(false)

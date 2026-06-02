@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, Card, CardContent, Grid, TextField, Typography, Stack, MenuItem } from '@mui/material'
+import { Button, Card, CardContent, Grid, TextField, Typography, Stack, MenuItem } from '@mui/material'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { projectsApi } from '@/services/api'
@@ -65,7 +65,7 @@ const ProjectUpload = () => {
   })
 
   return (
-    <Box sx={{ display: 'grid', gap: 4 }}>
+    <div style={{ display: 'grid', gap: 32 }}>
       <Typography variant="h4">Upload new project</Typography>
       <Card sx={{ borderRadius: 3 }}>
         <CardContent>
@@ -119,7 +119,7 @@ const ProjectUpload = () => {
           </Stack>
         </CardContent>
       </Card>
-    </Box>
+    </div>
   )
 }
 

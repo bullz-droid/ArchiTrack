@@ -13,7 +13,7 @@ export const useProjects = () => {
       const response = await projectsApi.list()
       setProjects(response.data)
       setError(null)
-    } catch (err) {
+    } catch (_err) {
       setError('Unable to load project listings.')
     } finally {
       setLoading(false)

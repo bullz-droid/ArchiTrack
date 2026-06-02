@@ -15,7 +15,7 @@ export const useStorage = () => {
       setFiles(fileResponse.data)
       setStats(statsResponse.data)
       setError(null)
-    } catch (err) {
+    } catch (_err) {
       setError('Unable to load storage metadata.')
     } finally {
       setLoading(false)
@@ -29,9 +29,9 @@ export const useStorage = () => {
       setFiles((prev) => [response.data, ...prev])
       setError(null)
       return response.data
-    } catch (err) {
+    } catch (_err) {
       setError('Upload failed.')
-      throw err
+      throw _err
     } finally {
       setLoading(false)
     }
@@ -43,7 +43,7 @@ export const useStorage = () => {
       await storageApi.remove(fileId)
       setFiles((prev) => prev.filter((item) => item.id !== fileId))
       setError(null)
-    } catch (err) {
+    } catch (_err) {
       setError('Could not delete the file.')
     } finally {
       setLoading(false)

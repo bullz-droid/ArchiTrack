@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material'
+import { Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material'
 import UploadFileIcon from '@mui/icons-material/UploadFile'
 
 const _icon = (m: any) => (m && m.default) ? m.default : m
@@ -38,7 +38,7 @@ const FileUploader = ({ files, onFilesAdded }: FileUploaderProps) => {
   })
 
   return (
-    <Box>
+    <div>
       <Paper {...getRootProps()} elevation={0} sx={{ p: 4, border: '2px dashed', borderColor: isDragActive ? 'primary.main' : 'divider', textAlign: 'center', cursor: 'pointer', mb: 3 }}>
         <input {...getInputProps()} />
         {UploadFileComp ? <UploadFileComp sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} /> : null}
@@ -64,7 +64,7 @@ const FileUploader = ({ files, onFilesAdded }: FileUploaderProps) => {
           </ListItem>
         ))}
       </List>
-    </Box>
+    </div>
   )
 }
 

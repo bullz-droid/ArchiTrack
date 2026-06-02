@@ -1,5 +1,5 @@
 ﻿import { useMemo, useState } from 'react'
-import { Box, Button, Card, CardContent, Grid, LinearProgress, Stack, Typography } from '@mui/material'
+import { Button, Card, CardContent, Grid, LinearProgress, Stack, Typography } from '@mui/material'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 
 const _icon = (m: any) => (m && m.default) ? m.default : m
@@ -25,11 +25,11 @@ const CloudStorage = () => {
   }
 
   return (
-    <Box sx={{ display: 'grid', gap: 4 }}>
-      <Box>
+    <div style={{ display: 'grid', gap: 32 }}>
+      <div>
         <Typography variant="h4">Cloud storage</Typography>
         <Typography color="text.secondary">Manage your architectural assets in one secure workspace.</Typography>
-      </Box>
+      </div>
 
       <Card sx={{ borderRadius: 3, p: 3 }}>
         <Stack spacing={2}>
@@ -97,7 +97,7 @@ const CloudStorage = () => {
         }}
         onCancel={() => setConfirmDelete(null)}
       />
-    </Box>
+    </div>
   )
 }
 

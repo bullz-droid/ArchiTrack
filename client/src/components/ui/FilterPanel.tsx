@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, MenuItem, Select, Slider, Stack } from '@mui/material'
+import { Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, MenuItem, Select, Slider, Stack } from '@mui/material'
 import type { ArchitectFilters } from '@/types'
 
 interface FilterPanelProps {
@@ -20,7 +20,7 @@ const FilterPanel = ({ filters, onFiltersChange }: FilterPanelProps) => {
   }
 
   return (
-    <Box sx={{ p: 3, borderRadius: 3, border: '1px solid', borderColor: 'divider', bgcolor: 'background.paper' }}>
+    <div style={{ padding: 24, borderRadius: 24, border: '1px solid rgba(145, 158, 171, 0.24)', backgroundColor: 'var(--mui-palette-background-paper)' }}>
       <Stack spacing={3}>
         <FormControl fullWidth>
           <FormLabel>Location</FormLabel>
@@ -50,7 +50,7 @@ const FilterPanel = ({ filters, onFiltersChange }: FilterPanelProps) => {
           <FormLabel>Budget range</FormLabel>
           <Slider
             value={filters.budgetRange}
-            onChange={(_, value) => onFiltersChange({ ...filters, budgetRange: value as [number, number] })}
+            onChange={(_: Event, value: number | number[]) => onFiltersChange({ ...filters, budgetRange: value as [number, number] })}
             valueLabelDisplay="auto"
             min={0}
             max={100000}
@@ -83,7 +83,7 @@ const FilterPanel = ({ filters, onFiltersChange }: FilterPanelProps) => {
           </FormGroup>
         </FormControl>
       </Stack>
-    </Box>
+    </div>
   )
 }
 

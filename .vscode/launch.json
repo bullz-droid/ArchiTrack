@@ -17,7 +17,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Debug ArchiTrack (Chrome)",
-            "url": "http://localhost:5353",
+            "url": "http://localhost:5355",
             "webRoot": "${workspaceFolder}/client",
             "userDataDir": false,
             "runtimeArgs": [
@@ -28,7 +28,7 @@
             "type": "msedge",
             "request": "launch",
             "name": "Debug ArchiTrack (Edge)",
-            "url": "http://localhost:5353",
+            "url": "http://localhost:5355",
             "webRoot": "${workspaceFolder}/client",
             "userDataDir": false
         }

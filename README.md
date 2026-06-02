@@ -15,12 +15,21 @@ If you see "Failed to fetch" or 404 errors in production, follow these exact ste
 Add these to your **Vercel Project Settings > Environment Variables**:
 - `VITE_SUPABASE_URL`: Your Supabase Project URL (starts with `https://`)
 - `VITE_SUPABASE_ANON_KEY`: Your Supabase Anon Key
-- `VITE_API_URL`: Your Railway Backend URL (e.g., `https://architrack-production.up.railway.app/api`)
+- `VITE_API_URL`: Your backend API URL (for example: `https://architrack-production.up.railway.app/api`)
+
+For the server backend, add these to the server environment as well:
+- `SUPABASE_URL`: Same Supabase project URL
+- `SUPABASE_ANON_KEY`: Same Supabase anon key
+- `SUPABASE_SERVICE_ROLE_KEY`: Optional, use only if your server needs elevated access for server-side Supabase actions
+- `FRONTEND_URL`: Your deployed frontend URL (for example: `https://architrack.vercel.app`)
+
+> Keep `SUPABASE_SERVICE_ROLE_KEY` private and never expose it to the browser.
 
 ### 2.1 Supabase Redirect URIs
-In the Supabase Dashboard, add the following redirect URIs to Google auth and any OAuth providers:
-- `http://localhost:5353/auth/callback`
-- `https://Architrack-app.vercel.app/auth/callback`
+In the Supabase Dashboard, add the following redirect URIs for auth callbacks:
+- `http://localhost:5355/auth/callback`
+- `https://architrack.vercel.app/auth/callback`
+- `https://architrack-murex.vercel.app/auth/callback`
 
 ### 3. Railway Backend Settings
 - Ensure your Railway project has a "Root Directory" of `server`.

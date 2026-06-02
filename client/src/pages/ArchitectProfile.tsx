@@ -1,6 +1,6 @@
 ﻿import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { Box, Button, Card, Chip, Grid, Stack, Typography } from '@mui/material'
+import { Button, Card, Chip, Grid, Stack, Typography } from '@mui/material'
 import { architectsApi } from '@/services/api'
 import { EmptyState, LoadingSpinner } from '@/components/ui/FeedbackComponents'
 import RatingStars from '@/components/ui/RatingStars'
@@ -24,7 +24,7 @@ const ArchitectProfile = () => {
         const portfolioResponse = await architectsApi.getPortfolio(id)
         setPortfolio(portfolioResponse.data)
         setError(null)
-      } catch (err) {
+      } catch (_err) {
         setError('Unable to load architect profile.')
       } finally {
         setLoading(false)
@@ -39,11 +39,11 @@ const ArchitectProfile = () => {
   if (!architect) return <EmptyState title="Architect not found" description="Check the profile link or try another architect." />
 
   return (
-    <Box sx={{ display: 'grid', gap: 4 }}>
+    <div style={{ display: 'grid', gap: 32 }}>
       <Card sx={{ borderRadius: 3, p: 3 }}>
         <Grid container spacing={4} alignItems="center">
           <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'grid', gap: 2 }}>
+            <div style={{ display: 'grid', gap: 16 }}>
               <Typography variant="h3">{architect.name}</Typography>
               <Typography color="text.secondary">{architect.firm || 'Independent Architecture Studio'}</Typography>
               <Typography>{architect.location || 'Remote'}</Typography>
@@ -53,7 +53,7 @@ const ArchitectProfile = () => {
                   <Chip key={tag} label={tag} color="secondary" size="small" />
                 ))}
               </Stack>
-            </Box>
+            </div>
           </Grid>
 
           <Grid item xs={12} md={8}>
@@ -116,7 +116,7 @@ const ArchitectProfile = () => {
           </Card>
         </Grid>
       </Grid>
-    </Box>
+    </div>
   )
 }
 

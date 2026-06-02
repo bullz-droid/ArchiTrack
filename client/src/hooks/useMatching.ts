@@ -13,7 +13,7 @@ export const useMatching = () => {
       const response = await matchingApi.find(filters)
       setMatches(response.data)
       setError(null)
-    } catch (err) {
+    } catch (_err) {
       setError('Unable to generate architect matches.')
     } finally {
       setLoading(false)

@@ -1,5 +1,5 @@
 ﻿import { useNavigate } from 'react-router-dom'
-import { Box, Button, Grid, TextField, Typography, Stack, Divider } from '@mui/material'
+import { Button, Grid, TextField, Typography, Stack, Divider } from '@mui/material'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useAuth } from '@/context/AuthContext'
@@ -30,12 +30,12 @@ const Login = () => {
   })
 
   return (
-    <Box sx={{ display: 'grid', gap: 3, position: 'relative', minHeight: '100vh' }}>
+    <div style={{ display: 'grid', gap: 24, position: 'relative', minHeight: '100vh' }}>
       <AntiGravityScene />
-      <Box>
+      <div>
         <Typography variant="h4">Sign in</Typography>
         <Typography color="text.secondary">Continue to your architect-client workspace.</Typography>
-      </Box>
+      </div>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -62,8 +62,6 @@ const Login = () => {
                     if (error) throw error
                     if (data?.url) window.location.assign(data.url)
                   } catch (err) {
-                    // show toast or console for now
-                    // eslint-disable-next-line no-console
                     console.error('Google OAuth failed', err)
                   }
                 }}
@@ -81,7 +79,6 @@ const Login = () => {
                     if (error) throw error
                     if (data?.url) window.location.assign(data.url)
                   } catch (err) {
-                    // eslint-disable-next-line no-console
                     console.error('LinkedIn OAuth failed', err)
                   }
                 }}
@@ -97,7 +94,7 @@ const Login = () => {
           </Grid>
         </Grid>
       </form>
-    </Box>
+    </div>
   )
 }
 

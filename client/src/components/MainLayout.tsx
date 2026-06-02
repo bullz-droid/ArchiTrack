@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, type ElementType } from 'react'
 import { Outlet, Link as RouterLink } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
+import type { SxProps, Theme } from '@mui/material'
 import {
   AppBar,
   Avatar,
   Badge,
-  Box,
   CssBaseline,
   Divider,
   Drawer,
@@ -33,7 +33,13 @@ import { useSocket } from '../context/SocketContext'
 const drawerWidth = 280
 
 // Some optimized deps export a module object with the real component on `.default`.
-const unwrapIcon = (mod: any) => (mod && (mod.default || mod.$$typeof)) ? mod.default ?? mod : mod
+const unwrapIcon = (mod: unknown): ElementType | null => {
+  if (mod && typeof mod === 'object') {
+    const moduleObject = mod as { default?: ElementType }
+    return moduleObject.default ?? (mod as ElementType)
+  }
+  return null
+}
 
 const navItems = [
   { label: 'Dashboard', component: unwrapIcon(DashboardIcon), path: '/dashboard' },
@@ -55,7 +61,7 @@ const MainLayout = () => {
   }
 
   const drawer = (
-    <Box sx={{ px: 2, py: 3 }}>
+    <div style={{ padding: '24px 16px' }}>
       <Typography variant="h6" color="primary" gutterBottom>
         ArchiConnect
       </Typography>
@@ -74,19 +80,30 @@ const MainLayout = () => {
           )
         })}
       </List>
-    </Box>
+    </div>
   )
 
   const WalletComp = unwrapIcon(WalletIcon)
   const FolderComp = unwrapIcon(FolderSharedIcon)
   const MenuComp = unwrapIcon(MenuIcon)
 
+  const appBarSx: SxProps<Theme> = {
+    width: { md: `calc(100% - ${drawerWidth}px)` },
+    ml: { md: `${drawerWidth}px` },
+  }
+
+  const toolbarSx: SxProps<Theme> = {
+    justifyContent: 'space-between',
+  }
+
+  const avatarSx = { width: 36, height: 36 }
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div style={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" elevation={1} sx={{ width: { md: `calc(100% - ${drawerWidth}px)` }, ml: { md: `${drawerWidth}px` } }}>
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <AppBar position="fixed" elevation={1} sx={appBarSx}>
+        <Toolbar sx={toolbarSx}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {!isMdUp && (
               <IconButton color="inherit" edge="start" onClick={handleDrawerToggle}>
                 {MenuComp ? <MenuComp /> : null}
@@ -95,36 +112,36 @@ const MainLayout = () => {
             <Typography variant="h6" noWrap>
               ArchiConnect
             </Typography>
-          </Box>
+          </div>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Badge badgeContent={matchNotifications.length} color="secondary">
               {WalletComp ? <WalletComp /> : null}
             </Badge>
             <Badge badgeContent={connectionRequests.length} color="secondary">
               {FolderComp ? <FolderComp /> : null}
             </Badge>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar alt={user?.name} src={user?.avatarUrl} sx={{ width: 36, height: 36 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Avatar alt={user?.name} src={user?.avatarUrl} sx={avatarSx}>
                 {user?.name?.charAt(0)}
               </Avatar>
-              <Box>
+              <div>
                 <Typography variant="body2">{user?.name || 'Guest'}</Typography>
                 <Typography variant="caption" color="text.secondary">
                   {user?.role === 'architect' ? 'Architect' : 'Client'}
                 </Typography>
-              </Box>
-            </Box>
-            <Box component="button" onClick={logout} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
+              </div>
+            </div>
+            <button onClick={logout} style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
               <Typography variant="button" color="secondary">
                 Sign Out
               </Typography>
-            </Box>
-          </Box>
+            </button>
+          </div>
         </Toolbar>
       </AppBar>
 
-      <Box component="nav" sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}>
+      <nav style={{ width: drawerWidth, flexShrink: 0 }}>
         {isMdUp ? (
           <Drawer
             variant="permanent"
@@ -150,12 +167,12 @@ const MainLayout = () => {
             {drawer}
           </Drawer>
         )}
-      </Box>
+      </nav>
 
-      <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 4 }, width: { md: `calc(100% - ${drawerWidth}px)` }, mt: 10 }}>
+      <main style={{ flexGrow: 1, padding: 32, width: `calc(100% - ${drawerWidth}px)`, marginTop: 10 }}>
         <Outlet />
-      </Box>
-    </Box>
+      </main>
+    </div>
   )
 }
 

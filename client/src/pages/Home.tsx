@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material'
+import { Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import ArchitectCard from '@/components/ui/ArchitectCard'
@@ -26,8 +26,8 @@ const Home = () => {
   ]
 
   return (
-    <Box sx={{ display: 'grid', gap: 4 }}>
-      <Box sx={{ display: 'grid', gap: 4, pt: 2 }}>
+    <div style={{ display: 'grid', gap: 32 }}>
+      <div style={{ display: 'grid', gap: 32, paddingTop: 16 }}>
         <Stack spacing={2} maxWidth={720}>
           <Typography variant="h2">Architecture collaboration made effortless.</Typography>
           <Typography variant="body1" color="text.secondary">
@@ -55,7 +55,7 @@ const Home = () => {
             </Grid>
           ))}
         </Grid>
-      </Box>
+      </div>
 
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <SearchBar value={search} onChange={setSearch} placeholder="Search architects, locations, or specialities" />
@@ -76,7 +76,7 @@ const Home = () => {
           ))}
         </Grid>
       )}
-    </Box>
+    </div>
   )
 }
 

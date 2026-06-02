@@ -1,4 +1,4 @@
-﻿import { Box, Card, CardContent, Grid, Stack, Typography, Chip, Avatar } from '@mui/material'
+﻿import { Card, CardContent, Grid, Stack, Typography, Chip, Avatar } from '@mui/material'
 import { useConnections } from '@/hooks/useConnections'
 import { useProjects } from '@/hooks/useProjects'
 import { EmptyState, LoadingSpinner } from '@/components/ui/FeedbackComponents'
@@ -10,7 +10,7 @@ const Dashboard = () => {
   const recentProjects = projects.slice(0, 3)
 
   return (
-    <Box sx={{ display: 'grid', gap: 4 }}>
+    <div style={{ display: 'grid', gap: 32 }}>
       <Typography variant="h4">Client dashboard</Typography>
 
       <Grid container spacing={3}>
@@ -67,7 +67,7 @@ const Dashboard = () => {
               ) : (
                 <Stack spacing={2}>
                   {recentProjects.map((project) => (
-                    <Box key={project.id} sx={{ p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 3 }}>
+                    <div key={project.id} style={{ padding: 16, border: '1px solid', borderColor: 'rgba(145, 158, 171, 0.24)', borderRadius: 24 }}>
                       <Stack direction="row" justifyContent="space-between" alignItems="center">
                         <Stack>
                           <Typography variant="subtitle1">{project.title}</Typography>
@@ -77,7 +77,7 @@ const Dashboard = () => {
                         </Stack>
                         <Avatar sx={{ bgcolor: 'primary.main' }}>{project.title.charAt(0)}</Avatar>
                       </Stack>
-                    </Box>
+                    </div>
                   ))}
                 </Stack>
               )}
@@ -85,7 +85,7 @@ const Dashboard = () => {
           </Card>
         </Grid>
       </Grid>
-    </Box>
+    </div>
   )
 }
 

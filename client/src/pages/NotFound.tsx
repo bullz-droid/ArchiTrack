@@ -1,8 +1,8 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
 const NotFound = () => (
-  <Box sx={{ minHeight: '80vh', display: 'grid', placeItems: 'center', textAlign: 'center', px: 2 }}>
+  <div style={{ minHeight: '80vh', display: 'grid', placeItems: 'center', textAlign: 'center', paddingInline: 16 }}>
     <Typography variant="h2" gutterBottom>
       404
     </Typography>
@@ -12,7 +12,7 @@ const NotFound = () => (
     <Button component={RouterLink} to="/" variant="contained" color="primary">
       Go to Home
     </Button>
-  </Box>
+  </div>
 )
 
 export default NotFound

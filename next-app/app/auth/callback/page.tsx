@@ -10,16 +10,21 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const supabase = createBrowserClient()
-
-    supabase.auth.getSessionFromUrl({ storeSession: true })
-      .then(({ data, error }) => {
+    const completeAuth = async () => {
+      try {
+        await supabase.auth.initialize()
+        const { data, error } = await supabase.auth.getSession()
         if (error || !data?.session) {
           setMessage(error?.message ?? 'OAuth callback failed.')
           return
         }
         router.replace('/dashboard')
-      })
-      .catch((err) => setMessage((err as Error).message || 'Unable to complete authentication.'))
+      } catch (err) {
+        setMessage((err as Error).message || 'Unable to complete authentication.')
+      }
+    }
+
+    completeAuth()
   }, [router])
 
   return (

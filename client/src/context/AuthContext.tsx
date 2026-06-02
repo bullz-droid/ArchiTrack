@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { authApi, refreshAuthToken, saveTokens, setAuthToken } from '../services/api'
 import { supabase } from '@/services/supabase'
 import type { LoginPayload, RegisterPayload, User } from '@/types'
@@ -7,8 +7,8 @@ interface AuthContextType {
   user: User | null
   token: string | null
   loading: boolean
-  login: (payload: LoginPayload) => Promise<void>
-  register: (payload: RegisterPayload) => Promise<void>
+  login: (_payload: LoginPayload) => Promise<void>
+  register: (_payload: RegisterPayload) => Promise<void>
   logout: () => void
   refreshUser: () => Promise<void>
 }
@@ -25,14 +25,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const initializeAuth = async () => {
       // If redirected back from Supabase OAuth, parse session from URL and persist it.
       try {
-        const { data, error } = await supabase.auth.getSessionFromUrl({ storeSession: true })
+        await supabase.auth.initialize()
+        const { data: sessionData, error } = await supabase.auth.getSession()
         if (error) {
           // ignore - not every load is an OAuth callback
-        } else if (data?.session) {
-          const newToken = data.session.access_token
-          const newRefresh = data.session.refresh_token
+        } else if (sessionData?.session) {
+          const newToken = sessionData.session.access_token
+          const newRefresh = sessionData.session.refresh_token
           if (newToken) {
-            localStorage.setItem('archiconnect_token', newToken)
+            localStorage.setItem(TOKEN_KEY, newToken)
             if (newRefresh) localStorage.setItem('archiconnect_refresh_token', newRefresh)
             setAuthToken(newToken)
             setToken(newToken)
@@ -44,15 +45,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             }
           }
         }
-      } catch (err) {
+      } catch {
         // ignore
       }
+
       if (token) {
         setAuthToken(token)
         try {
           const data = await authApi.getMe()
           setUser(data.user)
-        } catch (error) {
+        } catch {
           const newToken = await refreshAuthToken()
           if (newToken) {
             setToken(newToken)
@@ -94,26 +96,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     saveTokens(data.token, data.refreshToken || null)
   }
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem('archiconnect_refresh_token')
     setAuthToken(null)
     setUser(null)
     setToken(null)
-  }
+  }, [])
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
     try {
       const data = await authApi.getMe()
       setUser(data.user)
-    } catch (error) {
+    } catch {
       logout()
     }
-  }
+  }, [logout])
 
   const value = useMemo(
     () => ({ user, token, loading, login, register, logout, refreshUser }),
-    [user, token, loading],
+    [user, token, loading, refreshUser, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

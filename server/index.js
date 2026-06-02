@@ -11,7 +11,9 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 const allowedOrigins = [
-  'http://localhost:5353',
+  'http://localhost:5355',
+  'http://localhost:5173',
+  'http://localhost:3000',
   process.env.FRONTEND_URL,
   'https://architrack.vercel.app',
   'https://architrack-murex.vercel.app', // User's current deployment
@@ -21,11 +23,13 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    
-    const isAllowed = allowedOrigins.some(allowed => {
+
+    const isAllowed = allowedOrigins.some((allowed) => {
       if (!allowed) return false;
-      return origin === allowed || origin.endsWith(allowed.replace('https://', '.'));
-    });
+      if (origin === allowed) return true;
+      if (allowed.startsWith('https://') && origin.endsWith(allowed.replace('https://', '.'))) return true;
+      return false;
+    }) || origin.endsWith('.vercel.app');
 
     if (isAllowed) {
       callback(null, true);

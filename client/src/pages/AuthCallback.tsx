@@ -7,16 +7,25 @@ export default function AuthCallback() {
   const [message, setMessage] = useState('Finalizing sign-in...')
 
   useEffect(() => {
-    supabase.auth.getSessionFromUrl({ storeSession: true })
-      .then(({ data, error }) => {
+    const completeSignIn = async () => {
+      try {
+        await supabase.auth.initialize()
+        const { data, error } = await supabase.auth.getSession()
         if (error || !data?.session) {
           setMessage(error?.message ?? 'OAuth callback failed.')
           return
         }
-        // Session stored in Supabase client storage; navigate to dashboard
         navigate('/dashboard', { replace: true })
-      })
-      .catch((err) => setMessage((err as Error).message || 'Unable to complete authentication.'))
+      } catch (error) {
+        if (error instanceof Error) {
+          setMessage(error.message)
+        } else {
+          setMessage('Unable to complete authentication.')
+        }
+      }
+    }
+
+    completeSignIn()
   }, [navigate])
 
   return (

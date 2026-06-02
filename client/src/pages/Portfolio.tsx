@@ -1,5 +1,5 @@
 ﻿import { useMemo, useState } from 'react'
-import { Box, Button, Grid, Stack, Typography } from '@mui/material'
+import { Button, Grid, Stack, Typography } from '@mui/material'
 import { useProjects } from '@/hooks/useProjects'
 import ProjectCard from '@/components/ui/ProjectCard'
 import { EmptyState, LoadingSpinner } from '@/components/ui/FeedbackComponents'
@@ -15,7 +15,7 @@ const Portfolio = () => {
   )
 
   return (
-    <Box sx={{ display: 'grid', gap: 4 }}>
+    <div style={{ display: 'grid', gap: 32 }}>
       <Stack direction={{ xs: 'column', sm: 'row' }} alignItems="center" justifyContent="space-between" spacing={2}>
         <Typography variant="h4">Portfolio gallery</Typography>
         <Stack direction="row" flexWrap="wrap" gap={1}>
@@ -45,7 +45,7 @@ const Portfolio = () => {
           ))}
         </Grid>
       )}
-    </Box>
+    </div>
   )
 }
 

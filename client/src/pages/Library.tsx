@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import api from '../services/api';
 import { 
   File, 
@@ -34,7 +34,7 @@ const Library: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [filesRes, projectsRes] = await Promise.all([
         api.get('/files', {
@@ -43,27 +43,27 @@ const Library: React.FC = () => {
             fileType: selectedType,
             folder: selectedFolder,
             dateSort,
-            search
-          }
+            search,
+          },
         }),
-        api.get('/projects')
-      ]);
-      setFiles(filesRes.data);
-      setProjects(projectsRes.data);
+        api.get('/projects'),
+      ])
+      setFiles(filesRes.data)
+      setProjects(projectsRes.data)
     } catch (err: any) {
-      console.error(err);
-      toast.error('Failed to sync studio assets');
+      console.error(err)
+      toast.error('Failed to sync studio assets')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }, [selectedProject, selectedType, selectedFolder, dateSort, search])
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      fetchData();
-    }, 300); // Debounce search
-    return () => clearTimeout(timer);
-  }, [selectedProject, selectedType, selectedFolder, dateSort, search]);
+      fetchData()
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [fetchData])
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;

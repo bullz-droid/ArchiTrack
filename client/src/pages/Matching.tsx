@@ -1,5 +1,5 @@
 ﻿import { useMemo, useState } from 'react'
-import { Box, Button, Card, CardContent, Grid, Stack, Typography, Chip, LinearProgress } from '@mui/material'
+import { Button, Card, CardContent, Grid, Stack, Typography, Chip, LinearProgress } from '@mui/material'
 import { useMatching } from '@/hooks/useMatching'
 import FilterPanel from '@/components/ui/FilterPanel'
 import { EmptyState, LoadingSpinner } from '@/components/ui/FeedbackComponents'
@@ -23,7 +23,7 @@ const Matching = () => {
   )
 
   return (
-    <Box sx={{ display: 'grid', gap: 4 }}>
+    <div style={{ display: 'grid', gap: 32 }}>
       <Typography variant="h4">Architect matching</Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} lg={4}>
@@ -53,7 +53,7 @@ const Matching = () => {
                 <Card key={result.architect.id} sx={{ borderRadius: 3 }}>
                   <CardContent>
                     <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems="flex-start" spacing={2}>
-                      <Box>
+                      <div>
                         <Typography variant="h6">{result.architect.name}</Typography>
                         <Typography variant="body2" color="text.secondary">
                           {result.architect.location}
@@ -63,7 +63,7 @@ const Matching = () => {
                             <Chip key={tag} label={tag} size="small" />
                           ))}
                         </Stack>
-                      </Box>
+                      </div>
                       <Stack alignItems="flex-end" spacing={1}>
                         <Typography variant="subtitle2" color="secondary">
                           {result.compatibility}%
@@ -81,7 +81,7 @@ const Matching = () => {
           )}
         </Grid>
       </Grid>
-    </Box>
+    </div>
   )
 }
 

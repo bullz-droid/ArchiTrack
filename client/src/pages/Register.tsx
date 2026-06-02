@@ -1,5 +1,5 @@
 ﻿import { useNavigate } from 'react-router-dom'
-import { Box, Button, Grid, MenuItem, TextField, Typography } from '@mui/material'
+import { Button, Grid, MenuItem, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useAuth } from '@/context/AuthContext'
@@ -40,11 +40,11 @@ const Register = () => {
   })
 
   return (
-    <Box sx={{ display: 'grid', gap: 3 }}>
-      <Box>
+    <div style={{ display: 'grid', gap: 24 }}>
+      <div>
         <Typography variant="h4">Create account</Typography>
         <Typography color="text.secondary">Choose your role and start managing client collaborations.</Typography>
-      </Box>
+      </div>
       <form onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
@@ -83,7 +83,7 @@ const Register = () => {
           </Grid>
         </Grid>
       </form>
-    </Box>
+    </div>
   )
 }
 
