@@ -1,5 +1,7 @@
 {
-  "version": 3,
+  "version": 2,
+  "installCommand": "cd client && npm install",
+  "buildCommand": "cd client && npm run build",
   "builds": [
     {
       "src": "client/package.json",
@@ -9,9 +11,13 @@
       }
     }
   ],
+  "cleanUrls": true,
   "routes": [
     {
-      "src": "/(.*)",
+      "handle": "filesystem"
+    },
+    {
+      "src": "/.*",
       "dest": "/index.html"
     }
   ]
