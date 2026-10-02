@@ -1,0 +1,7 @@
+{
+  "name": "architrack",
+  "private": true,
+  "scripts": {
+    "build": "cd client && npm run build"
+  }
+}
