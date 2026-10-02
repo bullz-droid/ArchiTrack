@@ -29,7 +29,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
       </CardContent>
       <CardActions sx={{ justifyContent: 'space-between', px: 3, py: 2 }}>
         <Typography variant="subtitle2" color="text.primary">
-          ${project.budget.toLocaleString()} Budget
+          ${Number(project.budget || 0).toLocaleString()} Budget
         </Typography>
         <Button size="small" variant="outlined">
           View Details

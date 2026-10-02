@@ -22,8 +22,13 @@ import {
   Menu as MenuIcon,
   LayoutDashboard as DashboardIcon,
   Users as PersonSearchIcon,
+  Folder as ProjectsIcon,
   FolderKanban as FolderSharedIcon,
   UploadCloud as CloudUploadIcon,
+  Library as LibraryIcon,
+  PenTool as NotesIcon,
+  Calendar as DeadlinesIcon,
+  Globe as PortfolioIcon,
   PlusCircle as AddCircleIcon,
   Wallet as WalletIcon,
 } from 'lucide-react'
@@ -35,8 +40,13 @@ const drawerWidth = 280
 const navItems = [
   { label: 'Dashboard', icon: DashboardIcon, path: '/dashboard' },
   { label: 'Architects', icon: PersonSearchIcon, path: '/' },
-  { label: 'Matching', icon: FolderSharedIcon, path: '/matching' },
+  { label: 'Projects', icon: ProjectsIcon, path: '/projects' },
+  { label: 'Architect Matching', icon: FolderSharedIcon, path: '/matching' },
   { label: 'Cloud Storage', icon: CloudUploadIcon, path: '/cloud-storage' },
+  { label: 'Archi Library', icon: LibraryIcon, path: '/library' },
+  { label: 'Design Log', icon: NotesIcon, path: '/notes' },
+  { label: 'Deadlines', icon: DeadlinesIcon, path: '/deadlines' },
+  { label: 'Portfolio Gallery', icon: PortfolioIcon, path: '/portfolio' },
   { label: 'Upload Project', icon: AddCircleIcon, path: '/project-upload' },
 ]
 
