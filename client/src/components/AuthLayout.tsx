@@ -1,6 +1,6 @@
-// @ts-nocheck
 import { Box, Paper, Typography } from '@mui/material'
 import { Outlet } from 'react-router-dom'
+import AntiGravityScene from '@/components/auth/AntiGravityScene'
 
 const AuthLayout = () => {
   return (
@@ -11,9 +11,12 @@ const AuthLayout = () => {
         placeItems: 'center',
         background: 'linear-gradient(180deg, #F5F6FA 0%, #FFFFFF 100%)',
         px: 2,
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Paper elevation={12} sx={{ width: '100%', maxWidth: 520, p: 4, borderRadius: 4 }}>
+      <AntiGravityScene />
+      <Paper elevation={12} sx={{ width: '100%', maxWidth: 520, p: 4, borderRadius: 4, position: 'relative', zIndex: 10, backdropFilter: 'blur(8px)', bgcolor: 'rgba(255,255,255,0.92)' }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Welcome to ArchiConnect
         </Typography>

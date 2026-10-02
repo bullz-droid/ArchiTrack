@@ -4,7 +4,6 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { useAuth } from '@/context/AuthContext'
 import { supabase } from '@/services/supabase'
-import AntiGravityScene from '@/components/auth/AntiGravityScene'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -30,8 +29,7 @@ const Login = () => {
   })
 
   return (
-    <Box sx={{ display: 'grid', gap: 3, position: 'relative' }}>
-      <AntiGravityScene />
+    <Box sx={{ display: 'grid', gap: 3 }}>
       <Box>
         <Typography variant="h4">Sign in</Typography>
         <Typography color="text.secondary">Continue to your architect-client workspace.</Typography>
