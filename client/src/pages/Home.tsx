@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { Box, Button, Card, CardContent, Grid, Stack, Typography } from '@mui/material'
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import ArchitectCard from '@/components/ui/ArchitectCard'
 import SearchBar from '@/components/ui/SearchBar'
@@ -57,9 +56,9 @@ const Home = () => {
         </Grid>
       </Box>
 
-      <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <Box>
         <SearchBar value={search} onChange={setSearch} placeholder="Search architects, locations, or specialities" />
-      </motion.div>
+      </Box>
 
       {loading ? (
         <LoadingSpinner />
