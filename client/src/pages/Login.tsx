@@ -1,4 +1,4 @@
-﻿import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Box, Button, Grid, TextField, Typography, Stack, Divider } from '@mui/material'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
@@ -30,7 +30,7 @@ const Login = () => {
   })
 
   return (
-    <Box sx={{ display: 'grid', gap: 3, position: 'relative', minHeight: '100vh' }}>
+    <Box sx={{ display: 'grid', gap: 3, position: 'relative' }}>
       <AntiGravityScene />
       <Box>
         <Typography variant="h4">Sign in</Typography>
