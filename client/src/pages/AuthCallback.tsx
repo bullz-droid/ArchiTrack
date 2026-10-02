@@ -7,23 +7,62 @@ export default function AuthCallback() {
   const [message, setMessage] = useState('Finalizing sign-in...')
 
   useEffect(() => {
-    supabase.auth.getSessionFromUrl({ storeSession: true })
-      .then(({ data, error }) => {
-        if (error || !data?.session) {
-          setMessage(error?.message ?? 'OAuth callback failed.')
+    let isMounted = true
+
+    const handleAuth = async () => {
+      try {
+        const params = new URLSearchParams(window.location.search)
+        const code = params.get('code')
+
+        if (code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(code)
+          if (error) throw error
+        }
+
+        const { data: { session }, error } = await supabase.auth.getSession()
+        if (error) throw error
+
+        if (session && isMounted) {
+          navigate('/dashboard', { replace: true })
           return
         }
-        // Session stored in Supabase client storage; navigate to dashboard
-        navigate('/dashboard', { replace: true })
-      })
-      .catch((err) => setMessage((err as Error).message || 'Unable to complete authentication.'))
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+          if (newSession && isMounted) {
+            navigate('/dashboard', { replace: true })
+          }
+        })
+
+        const timeout = setTimeout(() => {
+          if (isMounted) {
+            navigate('/dashboard', { replace: true })
+          }
+        }, 1500)
+
+        return () => {
+          subscription.unsubscribe()
+          clearTimeout(timeout)
+        }
+      } catch (err: unknown) {
+        if (isMounted) {
+          const errorMessage = err instanceof Error ? err.message : 'Unable to complete authentication.'
+          setMessage(errorMessage)
+        }
+      }
+    }
+
+    handleAuth()
+
+    return () => {
+      isMounted = false
+    }
   }, [navigate])
 
   return (
     <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center' }}>
-      <div style={{ padding: 20, borderRadius: 12, background: 'rgba(0,0,0,0.5)', color: 'white' }}>
-        <h2>Completing authentication...</h2>
-        <p>{message}</p>
+      <div style={{ padding: 24, borderRadius: 12, background: 'rgba(0,0,0,0.7)', color: 'white', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Completing authentication...</h2>
+        <p style={{ opacity: 0.8 }}>{message}</p>
       </div>
     </div>
   )

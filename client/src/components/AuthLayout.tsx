@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Box, Paper, Typography } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 

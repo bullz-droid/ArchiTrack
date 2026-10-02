@@ -50,7 +50,9 @@ const FilterPanel = ({ filters, onFiltersChange }: FilterPanelProps) => {
           <FormLabel>Budget range</FormLabel>
           <Slider
             value={filters.budgetRange}
-            onChange={(_, value) => onFiltersChange({ ...filters, budgetRange: value as [number, number] })}
+            onChange={(_: Event | React.SyntheticEvent, value: number | number[]) =>
+              onFiltersChange({ ...filters, budgetRange: value as [number, number] })
+            }
             valueLabelDisplay="auto"
             min={0}
             max={100000}

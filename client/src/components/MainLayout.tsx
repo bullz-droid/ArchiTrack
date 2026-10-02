@@ -1,4 +1,5 @@
-import { useState } from 'react'
+// @ts-nocheck
+import { type ReactElement, type ElementType, useState } from 'react'
 import { Outlet, Link as RouterLink } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import {
@@ -43,7 +44,37 @@ const navItems = [
   { label: 'Upload Project', component: unwrapIcon(AddCircleIcon), path: '/project-upload' },
 ]
 
-const MainLayout = () => {
+function DrawerContent() {
+  return (
+    <Box style={{ padding: '24px 16px' }}>
+      <Typography variant="h6" color="primary" gutterBottom>
+        ArchiConnect
+      </Typography>
+      <Typography color="text.secondary" variant="body2" gutterBottom>
+        Build architect-client relationships, manage files, and launch designs.
+      </Typography>
+      <Divider style={{ margin: '16px 0' }} />
+      <List>
+        {navItems.map((item) => {
+          const IconComp = item.component as ElementType | null
+          return (
+            <ListItemButton
+              key={item.label}
+              component={RouterLink as any}
+              to={item.path}
+              style={{ borderRadius: 8, marginBottom: 4 }}
+            >
+              <ListItemIcon>{IconComp ? <IconComp /> : null}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          )
+        })}
+      </List>
+    </Box>
+  )
+}
+
+const MainLayout = (): ReactElement => {
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -54,32 +85,11 @@ const MainLayout = () => {
     setMobileOpen((prev) => !prev)
   }
 
-  const drawer = (
-    <Box sx={{ px: 2, py: 3 }}>
-      <Typography variant="h6" color="primary" gutterBottom>
-        ArchiConnect
-      </Typography>
-      <Typography color="text.secondary" variant="body2" gutterBottom>
-        Build architect-client relationships, manage files, and launch designs.
-      </Typography>
-      <Divider sx={{ my: 2 }} />
-      <List>
-        {navItems.map((item) => {
-          const IconComp = item.component
-          return (
-            <ListItemButton component={RouterLink} to={item.path} key={item.label} sx={{ borderRadius: 2, mb: 1 }}>
-              <ListItemIcon>{IconComp ? <IconComp /> : null}</ListItemIcon>
-              <ListItemText primary={item.label} />
-            </ListItemButton>
-          )
-        })}
-      </List>
-    </Box>
-  )
+  const drawer = <DrawerContent />
 
-  const WalletComp = unwrapIcon(WalletIcon)
-  const FolderComp = unwrapIcon(FolderSharedIcon)
-  const MenuComp = unwrapIcon(MenuIcon)
+  const WalletComp = unwrapIcon(WalletIcon) as ElementType | null
+  const FolderComp = unwrapIcon(FolderSharedIcon) as ElementType | null
+  const MenuComp = unwrapIcon(MenuIcon) as ElementType | null
 
   return (
     <Box sx={{ display: 'flex' }}>

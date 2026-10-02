@@ -1,23 +1,15 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
-import { Canvas, useFrame, extend, useThree } from '@react-three/fiber'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
-import { Color, Vector3 } from 'three'
+import React, { useMemo, useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { Color, Vector3, Group } from 'three'
 
-extend({ OrbitControls })
-
-function Controls() {
-  const controls = useRef<any>(null)
-  const { camera, gl } = useThree()
-
-  useFrame(() => {
-    if (controls.current) {
-      controls.current.update()
-    }
+function SceneRig() {
+  useFrame(({ camera }) => {
+    camera.position.x = Math.sin(Date.now() * 0.0003) * 0.4
+    camera.lookAt(0, 0, 0)
   })
-
-  return <orbitControls ref={controls} args={[camera, gl.domElement]} enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.2} />
+  return null
 }
 
 function useGravitySpring(target: Vector3, position: Vector3, velocity: Vector3) {
@@ -29,13 +21,23 @@ function useGravitySpring(target: Vector3, position: Vector3, velocity: Vector3)
   position.add(velocity)
 }
 
-function FloatingBody({ geometry, color, initial, pointer }: any) {
-  const ref = useRef<any>(null)
-  const velocity = useRef(new Vector3((Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.02)).current
+function FloatingBody({
+  geometry,
+  initial,
+  pointer,
+}: {
+  geometry: React.ReactNode
+  initial: [number, number, number]
+  pointer: Vector3
+}) {
+  const ref = useRef<Group>(null)
+  const velocity = useRef(
+    new Vector3((Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.02, (Math.random() - 0.5) * 0.02),
+  ).current
 
   useFrame(() => {
     if (!ref.current) return
-    const position = ref.current.position as Vector3
+    const position = ref.current.position
     const attraction = position.clone().sub(pointer).multiplyScalar(0.06)
     const repel = attraction.length() < 1.8 ? attraction.multiplyScalar(-0.8) : new Vector3(0, 0, 0)
     const target = pointer.clone().multiplyScalar(0.2)
@@ -53,8 +55,9 @@ function FloatingBody({ geometry, color, initial, pointer }: any) {
 
 function ParticleField() {
   const particles = useMemo(() => {
-    const positions = new Float32Array(250 * 3)
-    for (let i = 0; i < positions.length; i += 3) {
+    const count = 250
+    const positions = new Float32Array(count * 3)
+    for (let i = 0; i < count * 3; i += 3) {
       positions[i] = (Math.random() - 0.5) * 10
       positions[i + 1] = (Math.random() - 0.5) * 6
       positions[i + 2] = (Math.random() - 0.5) * 10
@@ -65,15 +68,15 @@ function ParticleField() {
   return (
     <points>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={particles.length / 3} array={particles} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[particles, 3]} />
       </bufferGeometry>
-      <pointsMaterial size={0.04} color="#ffffff" transparent opacity={0.18} depthWrite={false} />
+      <pointsMaterial args={[{ size: 0.04, color: '#ffffff', transparent: true, opacity: 0.18, depthWrite: false }]} />
     </points>
   )
 }
 
 export default function AntiGravityScene() {
-  const [pointer, setPointer] = useState(new Vector3(0, 0, 0))
+  const [pointer, setPointer] = useState<Vector3>(new Vector3(0, 0, 0))
 
   return (
     <div
@@ -98,10 +101,9 @@ export default function AntiGravityScene() {
           geometry={
             <mesh>
               <sphereGeometry args={[0.8, 32, 32]} />
-              <meshStandardMaterial color="#64ffda" roughness={0.2} metalness={0.65} transparent opacity={0.85} />
+              <meshStandardMaterial args={[{ color: '#64ffda', roughness: 0.2, metalness: 0.65, transparent: true, opacity: 0.85 }]} />
             </mesh>
           }
-          color="#64ffda"
           initial={[-2.1, 1.2, -1]}
           pointer={pointer}
         />
@@ -110,10 +112,9 @@ export default function AntiGravityScene() {
           geometry={
             <mesh>
               <torusKnotGeometry args={[0.65, 0.22, 128, 24]} />
-              <meshStandardMaterial color="#ff4d6d" roughness={0.18} metalness={0.9} transparent opacity={0.82} />
+              <meshStandardMaterial args={[{ color: '#ff4d6d', roughness: 0.18, metalness: 0.9, transparent: true, opacity: 0.82 }]} />
             </mesh>
           }
-          color="#ff4d6d"
           initial={[1.6, 0.9, -1.4]}
           pointer={pointer}
         />
@@ -122,15 +123,14 @@ export default function AntiGravityScene() {
           geometry={
             <mesh>
               <icosahedronGeometry args={[0.9, 0]} />
-              <meshStandardMaterial color="#7c3aed" roughness={0.22} metalness={0.78} transparent opacity={0.88} />
+              <meshStandardMaterial args={[{ color: '#7c3aed', roughness: 0.22, metalness: 0.78, transparent: true, opacity: 0.88 }]} />
             </mesh>
           }
-          color="#7c3aed"
           initial={[0.8, -1.1, -0.5]}
           pointer={pointer}
         />
 
-        <Controls />
+        <SceneRig />
       </Canvas>
     </div>
   )

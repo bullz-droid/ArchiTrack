@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { io, Socket } from 'socket.io-client'
+import { supabase } from '@/services/supabase'
 import { useAuth } from './AuthContext'
 import type { ReactNode } from 'react'
 
 interface SocketContextValue {
-  socket: Socket | null
+  socket: any
   onlineUsers: string[]
   matchNotifications: string[]
   connectionRequests: string[]
@@ -14,51 +14,69 @@ interface SocketContextValue {
 const SocketContext = createContext<SocketContextValue | undefined>(undefined)
 
 export const SocketProvider = ({ children }: { children: ReactNode }) => {
-  const { token } = useAuth()
-  const [socket, setSocket] = useState<Socket | null>(null)
+  const { user } = useAuth()
   const [onlineUsers, setOnlineUsers] = useState<string[]>([])
   const [matchNotifications, setMatchNotifications] = useState<string[]>([])
   const [connectionRequests, setConnectionRequests] = useState<string[]>([])
   const [portfolioUpdates, setPortfolioUpdates] = useState<string[]>([])
-  const socketUrl = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
   useEffect(() => {
-    if (!token) {
-      setSocket(null)
+    if (!user) {
       return
     }
 
-    const client = io(socketUrl, {
-      auth: { token },
-      transports: ['websocket'],
+    const channel = supabase.channel('architrack_workspace', {
+      config: {
+        presence: { key: user.id },
+      },
     })
 
-    setSocket(client)
-
-    client.on('connect', () => {
-      client.emit('join', { token })
-    })
-
-    client.on('onlineUsers', (users: string[]) => {
-      setOnlineUsers(users)
-    })
-
-    client.on('newMatch', (payload: { message: string }) => {
-      setMatchNotifications((prev) => [payload.message, ...prev])
-    })
-
-    client.on('connectionRequest', (payload: { message: string }) => {
-      setConnectionRequests((prev) => [payload.message, ...prev])
-    })
-
-    client.on('portfolioUpdate', (payload: { message: string }) => {
-      setPortfolioUpdates((prev) => [payload.message, ...prev])
-    })
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState()
+        const users = Object.keys(state)
+        setOnlineUsers(users)
+      })
+      .on('broadcast', { event: 'newMatch' }, ({ payload }) => {
+        if (payload?.message) {
+          setMatchNotifications((prev) => [payload.message, ...prev])
+        }
+      })
+      .on('broadcast', { event: 'connectionRequest' }, ({ payload }) => {
+        if (payload?.message) {
+          setConnectionRequests((prev) => [payload.message, ...prev])
+        }
+      })
+      .on('broadcast', { event: 'portfolioUpdate' }, ({ payload }) => {
+        if (payload?.message) {
+          setPortfolioUpdates((prev) => [payload.message, ...prev])
+        }
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({
+            id: user.id,
+            name: user.name,
+            role: user.role,
+            online_at: new Date().toISOString(),
+          })
+        }
+      })
 
     return () => {
-      client.disconnect()
+      supabase.removeChannel(channel)
     }
-  }, [socketUrl, token])
+  }, [user])
+
+  const socket = useMemo(
+    () => ({
+      emit: (_event: string, _data?: any) => {},
+      on: (_event: string, _callback: any) => {},
+      off: (_event: string, _callback?: any) => {},
+      connected: true,
+    }),
+    [],
+  )
 
   const value = useMemo(
     () => ({ socket, onlineUsers, matchNotifications, connectionRequests, portfolioUpdates }),

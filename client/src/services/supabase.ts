@@ -1,15 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://nnzbiipgxkgjspesxvva.supabase.co'
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('CRITICAL: Supabase environment variables are missing! Registration and login will fail. Please check your .env file or Vercel dashboard.');
-} else {
-  console.log('Supabase client initialized with URL:', supabaseUrl.substring(0, 10) + '...');
+if (!import.meta.env.VITE_SUPABASE_ANON_KEY) {
+  console.warn(
+    'VITE_SUPABASE_ANON_KEY is not set. Please add your Supabase Anon Key to .env or Vercel Environment Variables.'
+  )
 }
 
 export const supabase = createClient(
-  supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseAnonKey || 'placeholder'
+  supabaseUrl,
+  supabaseAnonKey || 'anon-key-placeholder',
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+    },
+  }
 )

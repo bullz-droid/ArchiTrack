@@ -84,7 +84,7 @@ const Library: React.FC = () => {
 
       try {
         await api.post('/files/upload', formData, {
-          onUploadProgress: (progressEvent) => {
+          onUploadProgress: (progressEvent: ProgressEvent) => {
             const percentCompleted = Math.round((progressEvent.loaded ?? 0) * 100 / (progressEvent.total ?? 1))
             setUploadProgress(percentCompleted)
           },
