@@ -1,9 +1,6 @@
-﻿import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Box, Button, Card, CardContent, Grid, LinearProgress, Stack, Typography } from '@mui/material'
-import FileUploadIcon from '@mui/icons-material/FileUpload'
-
-const _icon = (m: any) => (m && m.default) ? m.default : m
-const FileUploadComp = _icon(FileUploadIcon)
+import { Upload } from 'lucide-react'
 import { useStorage } from '@/hooks/useStorage'
 import FileUploader from '@/components/ui/FileUploader'
 import { EmptyState, LoadingSpinner, ConfirmDialog } from '@/components/ui/FeedbackComponents'
@@ -44,7 +41,7 @@ const CloudStorage = () => {
 
       <Card sx={{ borderRadius: 3, p: 3 }}>
         <FileUploader files={selectedFiles} onFilesAdded={(files) => setSelectedFiles(files)} />
-        <Button startIcon={FileUploadComp ? <FileUploadComp /> : undefined} variant="contained" disabled={selectedFiles.length === 0} onClick={handleUpload}>
+        <Button startIcon={<Upload size={18} />} variant="contained" disabled={selectedFiles.length === 0} onClick={handleUpload}>
           Upload selected files
         </Button>
       </Card>

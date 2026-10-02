@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { type ReactElement, type ElementType, useState } from 'react'
+import { useState, type ReactElement } from 'react'
 import { Outlet, Link as RouterLink } from 'react-router-dom'
 import { useTheme } from '@mui/material/styles'
 import {
@@ -19,29 +18,26 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material'
-import { default as MenuIcon } from '@mui/icons-material/Menu'
-import { default as DashboardIcon } from '@mui/icons-material/Dashboard'
-import { default as PersonSearchIcon } from '@mui/icons-material/PersonSearch'
-import { default as CloudUploadIcon } from '@mui/icons-material/CloudUpload'
-import { default as FolderSharedIcon } from '@mui/icons-material/FolderShared'
-import { default as WalletIcon } from '@mui/icons-material/Wallet'
-import { default as AddCircleIcon } from '@mui/icons-material/AddCircle'
+import {
+  Menu as MenuIcon,
+  LayoutDashboard as DashboardIcon,
+  Users as PersonSearchIcon,
+  FolderKanban as FolderSharedIcon,
+  UploadCloud as CloudUploadIcon,
+  PlusCircle as AddCircleIcon,
+  Wallet as WalletIcon,
+} from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useSocket } from '../context/SocketContext'
 
-// (debug logs removed)
-
 const drawerWidth = 280
 
-// Some optimized deps export a module object with the real component on `.default`.
-const unwrapIcon = (mod: any) => (mod && (mod.default || mod.$$typeof)) ? mod.default ?? mod : mod
-
 const navItems = [
-  { label: 'Dashboard', component: unwrapIcon(DashboardIcon), path: '/dashboard' },
-  { label: 'Architects', component: unwrapIcon(PersonSearchIcon), path: '/' },
-  { label: 'Matching', component: unwrapIcon(FolderSharedIcon), path: '/matching' },
-  { label: 'Cloud Storage', component: unwrapIcon(CloudUploadIcon), path: '/cloud-storage' },
-  { label: 'Upload Project', component: unwrapIcon(AddCircleIcon), path: '/project-upload' },
+  { label: 'Dashboard', icon: DashboardIcon, path: '/dashboard' },
+  { label: 'Architects', icon: PersonSearchIcon, path: '/' },
+  { label: 'Matching', icon: FolderSharedIcon, path: '/matching' },
+  { label: 'Cloud Storage', icon: CloudUploadIcon, path: '/cloud-storage' },
+  { label: 'Upload Project', icon: AddCircleIcon, path: '/project-upload' },
 ]
 
 function DrawerContent() {
@@ -56,7 +52,7 @@ function DrawerContent() {
       <Divider style={{ margin: '16px 0' }} />
       <List>
         {navItems.map((item) => {
-          const IconComp = item.component as ElementType | null
+          const Icon = item.icon
           return (
             <ListItemButton
               key={item.label}
@@ -64,7 +60,9 @@ function DrawerContent() {
               to={item.path}
               style={{ borderRadius: 8, marginBottom: 4 }}
             >
-              <ListItemIcon>{IconComp ? <IconComp /> : null}</ListItemIcon>
+              <ListItemIcon sx={{ minWidth: 36 }}>
+                <Icon size={20} />
+              </ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItemButton>
           )
@@ -87,10 +85,6 @@ const MainLayout = (): ReactElement => {
 
   const drawer = <DrawerContent />
 
-  const WalletComp = unwrapIcon(WalletIcon) as ElementType | null
-  const FolderComp = unwrapIcon(FolderSharedIcon) as ElementType | null
-  const MenuComp = unwrapIcon(MenuIcon) as ElementType | null
-
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -99,7 +93,7 @@ const MainLayout = (): ReactElement => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             {!isMdUp && (
               <IconButton color="inherit" edge="start" onClick={handleDrawerToggle}>
-                {MenuComp ? <MenuComp /> : null}
+                <MenuIcon size={22} />
               </IconButton>
             )}
             <Typography variant="h6" noWrap>
@@ -109,10 +103,10 @@ const MainLayout = (): ReactElement => {
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Badge badgeContent={matchNotifications.length} color="secondary">
-              {WalletComp ? <WalletComp /> : null}
+              <WalletIcon size={20} />
             </Badge>
             <Badge badgeContent={connectionRequests.length} color="secondary">
-              {FolderComp ? <FolderComp /> : null}
+              <FolderSharedIcon size={20} />
             </Badge>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Avatar alt={user?.name} src={user?.avatarUrl} sx={{ width: 36, height: 36 }}>

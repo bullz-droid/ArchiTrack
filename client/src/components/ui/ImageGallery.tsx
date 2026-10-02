@@ -1,9 +1,6 @@
 import { useState } from 'react'
 import { Box, Dialog, DialogContent, DialogTitle, ImageList, ImageListItem, IconButton } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
-
-const _icon = (m: any) => (m && m.default) ? m.default : m
-const CloseComp = _icon(CloseIcon)
+import { X } from 'lucide-react'
 
 interface ImageGalleryProps {
   images: string[]
@@ -24,9 +21,9 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
       <Dialog open={Boolean(selected)} onClose={() => setSelected(null)} maxWidth="lg" fullWidth>
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           Portfolio asset
-            <IconButton edge="end" color="inherit" onClick={() => setSelected(null)}>
-              {CloseComp ? <CloseComp /> : null}
-            </IconButton>
+          <IconButton edge="end" color="inherit" onClick={() => setSelected(null)}>
+            <X size={20} />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {selected && <img src={selected} alt="Selected asset" style={{ width: '100%', borderRadius: 16 }} />}

@@ -1,9 +1,6 @@
 import { Card, CardActions, CardContent, CardHeader, Chip, Stack, Typography, Button, Avatar } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
-import StarsIcon from '@mui/icons-material/Stars'
-
-const _icon = (m: any) => (m && m.default) ? m.default : m
-const StarsComp = _icon(StarsIcon)
+import { Star } from 'lucide-react'
 import type { User } from '@/types'
 
 interface ArchitectCardProps {
@@ -20,7 +17,7 @@ const ArchitectCard = ({ architect }: ArchitectCardProps) => {
       />
       <CardContent sx={{ flexGrow: 1 }}>
         <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 2 }}>
-          {StarsComp ? <StarsComp color="secondary" fontSize="small" /> : null}
+          <Star size={16} className="text-amber-500 fill-amber-500" />
           <Typography variant="body2" color="text.secondary">
             {architect.rating?.toFixed(1) ?? '4.8'} · {architect.reviewCount ?? 28} reviews
           </Typography>

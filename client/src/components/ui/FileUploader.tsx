@@ -1,10 +1,7 @@
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from '@mui/material'
-import UploadFileIcon from '@mui/icons-material/UploadFile'
-
-const _icon = (m: any) => (m && m.default) ? m.default : m
-const UploadFileComp = _icon(UploadFileIcon)
+import { UploadCloud } from 'lucide-react'
 
 interface FileUploaderProps {
   files: File[]
@@ -41,7 +38,9 @@ const FileUploader = ({ files, onFilesAdded }: FileUploaderProps) => {
     <Box>
       <Paper {...getRootProps()} elevation={0} sx={{ p: 4, border: '2px dashed', borderColor: isDragActive ? 'primary.main' : 'divider', textAlign: 'center', cursor: 'pointer', mb: 3 }}>
         <input {...getInputProps()} />
-        {UploadFileComp ? <UploadFileComp sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} /> : null}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <UploadCloud size={48} className="text-primary-main" />
+        </Box>
         <Typography variant="h6" gutterBottom>
           Drag & drop architectural files here
         </Typography>

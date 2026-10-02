@@ -1,10 +1,5 @@
-import { Stack, SvgIcon, Typography } from '@mui/material'
-import StarIcon from '@mui/icons-material/Star'
-import StarBorderIcon from '@mui/icons-material/StarBorder'
-
-const _icon = (m: any) => (m && m.default) ? m.default : m
-const StarComp = _icon(StarIcon)
-const StarBorderComp = _icon(StarBorderIcon)
+import { Stack, Typography } from '@mui/material'
+import { Star } from 'lucide-react'
 
 interface RatingStarsProps {
   value: number
@@ -18,9 +13,11 @@ const RatingStars = ({ value, count = 5 }: RatingStarsProps) => {
   return (
     <Stack direction="row" alignItems="center" spacing={0.5}>
       {stars.map((filledStar, index) => (
-        <SvgIcon key={index} color={filledStar ? 'secondary' : 'disabled'} fontSize="small">
-          {filledStar ? (StarComp ? <StarComp /> : null) : (StarBorderComp ? <StarBorderComp /> : null)}
-        </SvgIcon>
+        <Star
+          key={index}
+          size={16}
+          className={filledStar ? 'text-amber-500 fill-amber-500' : 'text-gray-300'}
+        />
       ))}
       <Typography variant="body2" color="text.secondary">
         {value.toFixed(1)}

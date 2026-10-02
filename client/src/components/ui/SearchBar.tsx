@@ -1,8 +1,5 @@
 import { InputAdornment, TextField } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
-
-const _icon = (m: any) => (m && m.default) ? m.default : m
-const SearchComp = _icon(SearchIcon)
+import { Search } from 'lucide-react'
 
 interface SearchBarProps {
   value: string
@@ -20,7 +17,7 @@ const SearchBar = ({ value, onChange, placeholder = 'Search architects, projects
     InputProps={{
       startAdornment: (
         <InputAdornment position="start">
-          {SearchComp ? <SearchComp color="action" /> : null}
+          <Search size={18} className="text-gray-400" />
         </InputAdornment>
       ),
     }}
